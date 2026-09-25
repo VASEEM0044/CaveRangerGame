@@ -31,6 +31,9 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
     /// Keyboard input controller feeding movement commands to the player.
     public private(set) var playerController: PlayerController!
     
+    /// On-screen touch controls (joystick, jump, whip, shoot, reload) for iOS devices.
+    public private(set) var touchControls: TouchControls!
+    
     /// Tracked active flying bullets in the scene.
     private var activeBullets: [Bullet] = []
     
@@ -46,10 +49,11 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
     public override func didMove(to view: SKView) {
         setupSceneProperties()
         setupPhysicsWorld()
+        setupPlayerController()
         setupLevel()
         setupCamera()
         setupPlayer()
-        setupPlayerController()
+        setupTouchControls()
         
         gameStateManager.delegate = self
     }
@@ -109,6 +113,11 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
     
     private func setupPlayerController() {
         playerController = PlayerController()
+    }
+    
+    private func setupTouchControls() {
+        touchControls = TouchControls(controller: playerController)
+        gameCamera.addChild(touchControls)
     }
     
     // MARK: - Frame Update Loop
@@ -289,6 +298,31 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         }
     }
     
+    // MARK: - Touch Input (iOS Multi-Touch)
+    
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard gameStateManager.currentState == .playing else { return }
+        touchControls?.handleTouchesBegan(touches, in: self)
+    }
+    
+    public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard gameStateManager.currentState == .playing else { return }
+        touchControls?.handleTouchesMoved(touches, in: self)
+    }
+    
+    public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        touchControls?.handleTouchesEnded(touches, in: self)
+    }
+    
+    public override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        touchControls?.handleTouchesCancelled(touches, in: self)
+    }
+    
+    /// Updates the touch control layout with iOS device safe-area insets.
+    public func updateSafeAreaInsets(_ insets: UIEdgeInsets) {
+        touchControls?.updateLayout(viewportSize: self.size, safeAreaInsets: insets)
+    }
+    
     // MARK: - Keyboard Input (macOS Catalyst / Simulator)
     
     #if targetEnvironment(macCatalyst) || os(macOS)
@@ -308,12 +342,16 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         switch newState {
         case .playing:
             self.isPaused = false
+            touchControls?.setControlsActive(true)
         case .paused:
             self.isPaused = true
+            touchControls?.setControlsActive(false)
         case .levelComplete:
             self.isPaused = false
+            touchControls?.setControlsActive(false)
         case .playerDead:
             self.isPaused = false
+            touchControls?.setControlsActive(false)
         }
     }
 }

@@ -15,6 +15,7 @@ public class GameViewController: UIViewController {
         
         // Optimize rendering performance
         skView.ignoresSiblingOrder = true
+        skView.isMultipleTouchEnabled = true
         
         // Debug metrics configured via GameConfig
         skView.showsFPS = GameConfig.Debug.showFPS
@@ -25,6 +26,13 @@ public class GameViewController: UIViewController {
         let scene = GameScene()
         scene.scaleMode = .aspectFit
         skView.presentScene(scene)
+    }
+
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        guard let skView = self.view as? SKView,
+              let gameScene = skView.scene as? GameScene else { return }
+        gameScene.updateSafeAreaInsets(skView.safeAreaInsets)
     }
 
     // MARK: - Screen Orientation & Status Bar

@@ -300,6 +300,30 @@ Pre-configured masks:
 
 ---
 
+## Phase 9: iPhone / iPad Touch Controls
+
+### Touch Controls System (`TouchControls.swift`)
+- **Virtual Analog Joystick (Bottom-Left)**:
+  - Translucent outer base circle (`radius = 38pt`) with center locator dot.
+  - Inner thumb knob (`radius = 18pt`) tracking user touches within activation area (`radius = 65pt`).
+  - Clamped thumb travel with smooth automatic spring-back on touch release.
+  - Outputs normalized horizontal axis `-1.0` (full left) to `+1.0` (full right) with a `4pt` deadzone.
+  - Vertical joystick movement is explicitly ignored so it does not trigger jumping.
+- **Action Button Cluster (Bottom-Right)**:
+  - **JUMP**: Large circular button (`radius = 27pt`, golden tint) triggering player jump (grounded only, no double jumps).
+  - **WHIP**: Dedicated melee attack button (`radius = 23pt`, amber tint) triggering whip attack sequence.
+  - **SHOOT**: Firearm button (`radius = 23pt`, crimson tint) firing the revolver.
+  - **RELOAD**: Utility button (`radius = 17pt`, cyan tint) requesting weapon reload.
+  - **Tactile Feedback**: Subtle `0.90` scale-down animation with heightened alpha highlight on press, restoring to `1.0` on release.
+- **Screen & Camera Fixed**:
+  - Attached directly to `GameCamera` node, ensuring all UI controls remain fixed on screen and never scroll with the cave level geometry.
+- **Safe-Area & Multi-Touch**:
+  - `GameViewController` enables `isMultipleTouchEnabled = true` on `SKView`.
+  - Propagates `safeAreaInsets` to `touchControls.updateLayout(...)` ensuring comfortable ergonomics around notches, Dynamic Island, and the Home Indicator across all iPhone/iPad models.
+  - State machine integration automatically disables and fades controls during level completion, pause, or death.
+
+---
+
 ## Building and Continuous Integration (CI)
 
 To compile and verify the project using command-line tools on macOS or CI runners (GitHub Actions):
@@ -324,4 +348,5 @@ xcodebuild clean build \
 5. ~~**Phase 6:** Revolver & bullet combat system (fire, reload, ammo, muzzle flash, projectile contacts).~~ ✅ Complete
 6. ~~**Phase 7:** Coin & collectible system (animations, pickup sequence, level distribution, level stats).~~ ✅ Complete
 7. ~~**Phase 8:** Mine exit portal & level completion.~~ ✅ Complete
-8. **Phase 9:** On-screen controls, HUD, and pause menu overlays.
+8. ~~**Phase 9:** iPhone/iPad on-screen touch controls.~~ ✅ Complete
+9. **Phase 10:** HUD overlay (health, ammo, coin counters) & pause menu.

@@ -24,6 +24,17 @@ public final class PlayerController {
     private var fireConsumed: Bool = false
     private var reloadConsumed: Bool = false
     
+    // MARK: - Touch Input State
+    
+    /// On-screen virtual joystick horizontal axis (-1.0 to +1.0).
+    public var touchInputDirection: CGFloat = 0.0
+    
+    /// Edge-triggered touch action flags.
+    public var touchJumpRequested: Bool = false
+    public var touchAttackRequested: Bool = false
+    public var touchFireRequested: Bool = false
+    public var touchReloadRequested: Bool = false
+    
     // MARK: - Computed Input
     
     /// Horizontal input direction: −1.0 (left), 0.0 (idle), +1.0 (right).
@@ -31,13 +42,17 @@ public final class PlayerController {
         var dir: CGFloat = 0.0
         if leftPressed  { dir -= 1.0 }
         if rightPressed { dir += 1.0 }
-        return dir
+        if abs(touchInputDirection) > 0.01 {
+            dir += touchInputDirection
+        }
+        return max(-1.0, min(1.0, dir))
     }
     
     /// Returns true exactly once per jump press (edge-triggered).
     public var jumpRequested: Bool {
-        if jumpPressed && !jumpConsumed {
+        if (jumpPressed && !jumpConsumed) || touchJumpRequested {
             jumpConsumed = true
+            touchJumpRequested = false
             return true
         }
         return false
@@ -45,8 +60,9 @@ public final class PlayerController {
     
     /// Returns true exactly once per whip attack press (edge-triggered via J or X).
     public var attackRequested: Bool {
-        if attackPressed && !attackConsumed {
+        if (attackPressed && !attackConsumed) || touchAttackRequested {
             attackConsumed = true
+            touchAttackRequested = false
             return true
         }
         return false
@@ -54,8 +70,9 @@ public final class PlayerController {
     
     /// Returns true exactly once per revolver fire press (edge-triggered via K).
     public var fireRequested: Bool {
-        if firePressed && !fireConsumed {
+        if (firePressed && !fireConsumed) || touchFireRequested {
             fireConsumed = true
+            touchFireRequested = false
             return true
         }
         return false
@@ -63,8 +80,9 @@ public final class PlayerController {
     
     /// Returns true exactly once per reload press (edge-triggered via R).
     public var reloadRequested: Bool {
-        if reloadPressed && !reloadConsumed {
+        if (reloadPressed && !reloadConsumed) || touchReloadRequested {
             reloadConsumed = true
+            touchReloadRequested = false
             return true
         }
         return false
