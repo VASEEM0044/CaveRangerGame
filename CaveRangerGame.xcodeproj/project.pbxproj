@@ -41,6 +41,7 @@
 		10000032 /* LevelStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000033 /* LevelStats.swift */; };
 		10000033 /* MineExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000034 /* MineExit.swift */; };
 		10000034 /* TouchControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000035 /* TouchControls.swift */; };
+		10000035 /* GameHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000036 /* GameHUD.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -80,6 +81,7 @@
 		20000033 /* LevelStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelStats.swift; sourceTree = "<group>"; };
 		20000034 /* MineExit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineExit.swift; sourceTree = "<group>"; };
 		20000035 /* TouchControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchControls.swift; sourceTree = "<group>"; };
+		20000036 /* GameHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameHUD.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -251,6 +253,7 @@
 			children = (
 				20000016 /* UIFoundation.swift */,
 				20000035 /* TouchControls.swift */,
+				20000036 /* GameHUD.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -356,6 +359,7 @@
 				10000032 /* LevelStats.swift in Sources */,
 				10000033 /* MineExit.swift in Sources */,
 				10000034 /* TouchControls.swift in Sources */,
+				10000035 /* GameHUD.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

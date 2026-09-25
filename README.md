@@ -324,6 +324,29 @@ Pre-configured masks:
 
 ---
 
+## Phase 10: HUD Overlay & Game UI
+
+### Game HUD System (`GameHUD.swift`)
+- **Top-Left Bar**:
+  - **Player Health**: Dynamic heart readout (`HP ♥ ♥ ♥`) updating immediately on damage. Clamped to `0 ... maxHealth`.
+  - **Coin Counter**: Real-time collectible status (`COINS 0/20`) tracking session coins.
+- **Top-Center Bar**:
+  - **Level Timer**: Active gameplay stopwatch (`00:00`) that runs during play, pauses on `.paused`, and freezes on `.levelComplete` / `.playerDead`.
+- **Top-Right Bar**:
+  - **Revolver Ammunition**: Real-time round counter (`REV 6/6`), changing to `RELOAD...` during cylinder reload or `EMPTY!` when depleted.
+  - **Pause Button**: Minimal `[ II ]` button that safely transitions `GameState` to `.paused`.
+- **Modal Overlays**:
+  - **Pause Menu (`PAUSED`)**: Centered modal with `[ RESUME ]` and `[ RESTART ]` buttons.
+  - **Level Complete Panel (`MINE CLEARED!`)**: Summarizes total coins collected and level completion time with `[ CONTINUE ]` button.
+  - **Game Over Panel (`GAME OVER`)**: Displays defeat message with `[ RETRY ]` button to trigger clean level reset.
+- **Touch Prioritization & Safe-Area**:
+  - Touch input on HUD buttons and modal overlays is consumed with priority, preventing accidental weapon firing or character movement.
+  - Adapts to notch, Dynamic Island, and Home Indicator insets.
+- **Level Restart Mechanism**:
+  - Cleanly recreates `MineLevel`, resets player, enemies, collectibles, timer, HUD metrics, and state machine without leaving duplicate nodes behind.
+
+---
+
 ## Building and Continuous Integration (CI)
 
 To compile and verify the project using command-line tools on macOS or CI runners (GitHub Actions):
@@ -349,4 +372,5 @@ xcodebuild clean build \
 6. ~~**Phase 7:** Coin & collectible system (animations, pickup sequence, level distribution, level stats).~~ ✅ Complete
 7. ~~**Phase 8:** Mine exit portal & level completion.~~ ✅ Complete
 8. ~~**Phase 9:** iPhone/iPad on-screen touch controls.~~ ✅ Complete
-9. **Phase 10:** HUD overlay (health, ammo, coin counters) & pause menu.
+9. ~~**Phase 10:** HUD overlay (health, ammo, coin counters) & pause menu.~~ ✅ Complete
+10. **Phase 11:** Audio, sound effects, particle effects, and final game polish.
