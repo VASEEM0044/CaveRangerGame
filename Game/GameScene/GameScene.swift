@@ -38,6 +38,9 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
     
     private var lastUpdateTime: TimeInterval = 0
     
+    /// Accumulated active gameplay duration in seconds.
+    public private(set) var levelElapsedTime: TimeInterval = 0.0
+    
     // MARK: - Scene Lifecycle
     
     public override func didMove(to view: SKView) {
@@ -74,6 +77,10 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
             coin.onCollectedHandler = { [weak self] c in
                 self?.levelStats.recordCoinCollected(value: c.value)
             }
+        }
+        
+        mineLevel.mineExit.onCompletionHandler = { [weak self] in
+            self?.handleLevelCompletion()
         }
     }
     
@@ -114,6 +121,9 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         lastUpdateTime = currentTime
         
         guard gameStateManager.currentState == .playing else { return }
+        
+        // Accumulate active gameplay timer
+        levelElapsedTime += deltaTime
         
         // Feed input into the player and run its update cycle
         player.update(
@@ -210,6 +220,12 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
             }
         }
         
+        // Player ↔ Exit contact
+        if bodyA.categoryBitMask == PhysicsCategory.player.rawValue &&
+           bodyB.categoryBitMask == PhysicsCategory.exit.rawValue {
+            mineLevel.mineExit.triggerCompletion(player: player)
+        }
+        
         // Bullet ↔ Enemy contact
         if bodyA.categoryBitMask == PhysicsCategory.enemy.rawValue &&
            bodyB.categoryBitMask == PhysicsCategory.projectile.rawValue {
@@ -226,6 +242,19 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
                 bullet.destroySelf(showImpact: true)
             }
         }
+    }
+    
+    // MARK: - Level Completion Coordination
+    
+    /// Handles transitioning the game state and stats when the level exit sequence finishes.
+    private func handleLevelCompletion() {
+        guard gameStateManager.currentState == .playing else { return }
+        
+        // Transition game state machine to LEVEL_COMPLETE
+        gameStateManager.transition(to: .levelComplete)
+        
+        // Record completion statistics
+        levelStats.markCompleted(elapsedTime: levelElapsedTime)
     }
     
     public func didEnd(_ contact: SKPhysicsContact) {

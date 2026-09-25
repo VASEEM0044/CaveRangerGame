@@ -31,6 +31,9 @@ public final class MineLevel {
     /// Placed gold coins in the level.
     public private(set) var coins: [Coin] = []
     
+    /// Mine exit door portal at the end of the cave.
+    public private(set) var mineExit: MineExit!
+    
     // MARK: - Initialization
     
     public init() {
@@ -42,12 +45,20 @@ public final class MineLevel {
         buildLevelGeometryAndVisuals()
         spawnSnakes()
         spawnCoins()
+        spawnMineExit()
         
         levelNode.addChild(collision.collisionNode)
         levelNode.addChild(collision.boundaryNode)
     }
     
     // MARK: - Spawning Methods
+    
+    private func spawnMineExit() {
+        // Place MineExit at the end of Section 5 (Open Cave Area)
+        let exitPosition = CGPoint(x: 2260.0, y: 200.0)
+        mineExit = MineExit(position: exitPosition)
+        levelNode.addChild(mineExit)
+    }
     
     private func spawnSnakes() {
         // Place 3 test snakes at reachable ground locations

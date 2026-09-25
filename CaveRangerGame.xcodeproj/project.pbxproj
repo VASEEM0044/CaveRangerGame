@@ -39,6 +39,7 @@
 		10000030 /* Collectible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000031 /* Collectible.swift */; };
 		10000031 /* Coin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000032 /* Coin.swift */; };
 		10000032 /* LevelStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000033 /* LevelStats.swift */; };
+		10000033 /* MineExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000034 /* MineExit.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,6 +77,7 @@
 		20000031 /* Collectible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectible.swift; sourceTree = "<group>"; };
 		20000032 /* Coin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coin.swift; sourceTree = "<group>"; };
 		20000033 /* LevelStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelStats.swift; sourceTree = "<group>"; };
+		20000034 /* MineExit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineExit.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -237,6 +239,7 @@
 				20000023 /* LevelCollision.swift */,
 				20000024 /* MineLevel.swift */,
 				20000033 /* LevelStats.swift */,
+				20000034 /* MineExit.swift */,
 			);
 			path = Level;
 			sourceTree = "<group>";
@@ -348,6 +351,7 @@
 				10000030 /* Collectible.swift in Sources */,
 				10000031 /* Coin.swift in Sources */,
 				10000032 /* LevelStats.swift in Sources */,
+				10000033 /* MineExit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

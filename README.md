@@ -281,6 +281,25 @@ Pre-configured masks:
 
 ---
 
+## Phase 8: Mine Exit & Level Completion
+
+### Mine Exit Portal (`MineExit.swift`)
+- `MineExit` node integrated with `mine_exit.png` (2816×1536, 128×128 frame grid, 22 cols × 12 rows) and cached texture animations via `MineExitAnimations`:
+  - `IDLE` (Row 0, 4 frames, 0.15s/frame, inactive portal glow)
+  - `ACTIVE` (Row 1, 4 frames, 0.12s/frame, active spinning exit energy)
+  - `COMPLETION` (Row 2, 4 frames, 0.10s/frame, portal completion flash)
+  - `FINAL` (Row 3, 4 frames, 0.10s/frame, level transition sequence)
+- Sensor physics body (48×64 pt) configured with `PhysicsCategory.exit` bitmask.
+- Four-state machine (`inactive`, `active`, `completing`, `completed`).
+
+### Level Completion & Flow (`LevelStats.swift` & `GameScene.swift`)
+- **Physics Contact & Activation**: Player ↔ Exit contact triggers exit activation. On contact, the portal transitions to `active` → `completing` state.
+- **Player Movement Lock & Completion**: Player input is locked during exit completion animation. `GameScene` handles `handleLevelCompletion()`, setting state to `.levelComplete`.
+- **Level Metrics**: `LevelStats` tracks `completionTime` and `isLevelCompleted` status upon completion.
+- **Level Exit Placement**: Placed at `(x: 2260.0, y: 200.0)` in Section 5 of `MineLevel`.
+
+---
+
 ## Building and Continuous Integration (CI)
 
 To compile and verify the project using command-line tools on macOS or CI runners (GitHub Actions):
@@ -304,5 +323,5 @@ xcodebuild clean build \
 4. ~~**Phase 5:** Whip combat system (animations, J/X input, melee hitbox, snake damage).~~ ✅ Complete
 5. ~~**Phase 6:** Revolver & bullet combat system (fire, reload, ammo, muzzle flash, projectile contacts).~~ ✅ Complete
 6. ~~**Phase 7:** Coin & collectible system (animations, pickup sequence, level distribution, level stats).~~ ✅ Complete
-7. **Phase 8:** Mine exit portal & level completion.
+7. ~~**Phase 8:** Mine exit portal & level completion.~~ ✅ Complete
 8. **Phase 9:** On-screen controls, HUD, and pause menu overlays.
