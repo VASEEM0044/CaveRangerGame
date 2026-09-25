@@ -1,0 +1,473 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		10000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000001 /* AppDelegate.swift */; };
+		10000002 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000002 /* GameViewController.swift */; };
+		10000003 /* GameConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000003 /* GameConfig.swift */; };
+		10000004 /* AssetConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000004 /* AssetConfig.swift */; };
+		10000005 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000005 /* GameState.swift */; };
+		10000006 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000006 /* GameScene.swift */; };
+		10000007 /* PhysicsCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000007 /* PhysicsCategory.swift */; };
+		10000008 /* GameCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000008 /* GameCamera.swift */; };
+		10000009 /* SpriteSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000009 /* SpriteSheet.swift */; };
+		10000010 /* TextureCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000010 /* TextureCache.swift */; };
+		10000011 /* PlayerFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000011 /* PlayerFoundation.swift */; };
+		10000012 /* EnemyFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000012 /* EnemyFoundation.swift */; };
+		10000013 /* WeaponFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000013 /* WeaponFoundation.swift */; };
+		10000014 /* CollectibleFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000014 /* CollectibleFoundation.swift */; };
+		10000015 /* LevelFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000015 /* LevelFoundation.swift */; };
+		10000016 /* UIFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000016 /* UIFoundation.swift */; };
+		10000017 /* Assets in Resources */ = {isa = PBXBuildFile; fileRef = 20000017 /* Assets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		00000001 /* CaveRangerGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CaveRangerGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		20000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		20000002 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		20000003 /* GameConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameConfig.swift; sourceTree = "<group>"; };
+		20000004 /* AssetConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetConfig.swift; sourceTree = "<group>"; };
+		20000005 /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
+		20000006 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		20000007 /* PhysicsCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsCategory.swift; sourceTree = "<group>"; };
+		20000008 /* GameCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCamera.swift; sourceTree = "<group>"; };
+		20000009 /* SpriteSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpriteSheet.swift; sourceTree = "<group>"; };
+		20000010 /* TextureCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureCache.swift; sourceTree = "<group>"; };
+		20000011 /* PlayerFoundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerFoundation.swift; sourceTree = "<group>"; };
+		20000012 /* EnemyFoundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnemyFoundation.swift; sourceTree = "<group>"; };
+		20000013 /* WeaponFoundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeaponFoundation.swift; sourceTree = "<group>"; };
+		20000014 /* CollectibleFoundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectibleFoundation.swift; sourceTree = "<group>"; };
+		20000015 /* LevelFoundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelFoundation.swift; sourceTree = "<group>"; };
+		20000016 /* UIFoundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFoundation.swift; sourceTree = "<group>"; };
+		20000017 /* Assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Assets; sourceTree = "<group>"; };
+		20000018 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		30000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		40000001 = {
+			isa = PBXGroup;
+			children = (
+				40000002 /* App */,
+				40000003 /* Game */,
+				20000017 /* Assets */,
+				40000004 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		40000002 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				20000001 /* AppDelegate.swift */,
+				20000002 /* GameViewController.swift */,
+				20000018 /* Info.plist */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		40000003 /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				40000005 /* GameConfig */,
+				40000006 /* GameState */,
+				40000007 /* GameScene */,
+				40000008 /* Physics */,
+				40000009 /* Camera */,
+				40000010 /* Utils */,
+				40000011 /* Player */,
+				40000012 /* Enemies */,
+				40000013 /* Weapons */,
+				40000014 /* Collectibles */,
+				40000015 /* Level */,
+				40000016 /* UI */,
+			);
+			path = Game;
+			sourceTree = "<group>";
+		};
+		40000004 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				00000001 /* CaveRangerGame.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		40000005 /* GameConfig */ = {
+			isa = PBXGroup;
+			children = (
+				20000003 /* GameConfig.swift */,
+				20000004 /* AssetConfig.swift */,
+			);
+			path = GameConfig;
+			sourceTree = "<group>";
+		};
+		40000006 /* GameState */ = {
+			isa = PBXGroup;
+			children = (
+				20000005 /* GameState.swift */,
+			);
+			path = GameState;
+			sourceTree = "<group>";
+		};
+		40000007 /* GameScene */ = {
+			isa = PBXGroup;
+			children = (
+				20000006 /* GameScene.swift */,
+			);
+			path = GameScene;
+			sourceTree = "<group>";
+		};
+		40000008 /* Physics */ = {
+			isa = PBXGroup;
+			children = (
+				20000007 /* PhysicsCategory.swift */,
+			);
+			path = Physics;
+			sourceTree = "<group>";
+		};
+		40000009 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				20000008 /* GameCamera.swift */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		40000010 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				20000009 /* SpriteSheet.swift */,
+				20000010 /* TextureCache.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		40000011 /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				20000011 /* PlayerFoundation.swift */,
+			);
+			path = Player;
+			sourceTree = "<group>";
+		};
+		40000012 /* Enemies */ = {
+			isa = PBXGroup;
+			children = (
+				20000012 /* EnemyFoundation.swift */,
+			);
+			path = Enemies;
+			sourceTree = "<group>";
+		};
+		40000013 /* Weapons */ = {
+			isa = PBXGroup;
+			children = (
+				20000013 /* WeaponFoundation.swift */,
+			);
+			path = Weapons;
+			sourceTree = "<group>";
+		};
+		40000014 /* Collectibles */ = {
+			isa = PBXGroup;
+			children = (
+				20000014 /* CollectibleFoundation.swift */,
+			);
+			path = Collectibles;
+			sourceTree = "<group>";
+		};
+		40000015 /* Level */ = {
+			isa = PBXGroup;
+			children = (
+				20000015 /* LevelFoundation.swift */,
+			);
+			path = Level;
+			sourceTree = "<group>";
+		};
+		40000016 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				20000016 /* UIFoundation.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		50000001 /* CaveRangerGame */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 60000001 /* Build configuration list for PBXNativeTarget "CaveRangerGame" */;
+			buildPhases = (
+				70000001 /* Sources */,
+				30000001 /* Frameworks */,
+				80000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CaveRangerGame;
+			productName = CaveRangerGame;
+			productReference = 00000001 /* CaveRangerGame.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		90000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					50000001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 60000002 /* Build configuration list for PBXProject "CaveRangerGame" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 40000001;
+			productRefGroup = 40000004 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				50000001 /* CaveRangerGame */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		80000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10000017 /* Assets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		70000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10000001 /* AppDelegate.swift in Sources */,
+				10000002 /* GameViewController.swift in Sources */,
+				10000003 /* GameConfig.swift in Sources */,
+				10000004 /* AssetConfig.swift in Sources */,
+				10000005 /* GameState.swift in Sources */,
+				10000006 /* GameScene.swift in Sources */,
+				10000007 /* PhysicsCategory.swift in Sources */,
+				10000008 /* GameCamera.swift in Sources */,
+				10000009 /* SpriteSheet.swift in Sources */,
+				10000010 /* TextureCache.swift in Sources */,
+				10000011 /* PlayerFoundation.swift in Sources */,
+				10000012 /* EnemyFoundation.swift in Sources */,
+				10000013 /* WeaponFoundation.swift in Sources */,
+				10000014 /* CollectibleFoundation.swift in Sources */,
+				10000015 /* LevelFoundation.swift in Sources */,
+				10000016 /* UIFoundation.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		60000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vntm.caverangerx;
+				PRODUCT_NAME = "Cave Ranger";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		60000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vntm.caverangerx;
+				PRODUCT_NAME = "Cave Ranger";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		60000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDEFINED_VARIABLES = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+			};
+			name = Debug;
+		};
+		60000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDEFINED_VARIABLES = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		60000001 /* Build configuration list for PBXNativeTarget "CaveRangerGame" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				60000003 /* Debug */,
+				60000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		60000002 /* Build configuration list for PBXProject "CaveRangerGame" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				60000005 /* Debug */,
+				60000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = 90000001 /* Project object */;
+}

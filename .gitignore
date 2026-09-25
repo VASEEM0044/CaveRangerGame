@@ -1,0 +1,20 @@
+# Xcode
+.DS_Store
+*/.DS_Store
+build/
+DerivedData/
+*.moved-aside
+*.xcuserstate
+*.xcuserdatad
+xcuserdata/
+*.xcscmblueprint
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# User-specific
+*.swp
+*~
+.idea/
+.vscode/
