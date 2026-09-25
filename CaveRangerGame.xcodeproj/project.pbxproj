@@ -27,6 +27,9 @@
 		10000018 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000019 /* Player.swift */; };
 		10000019 /* PlayerAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000020 /* PlayerAnimation.swift */; };
 		10000020 /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000021 /* PlayerController.swift */; };
+		10000021 /* MineTileset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000022 /* MineTileset.swift */; };
+		10000022 /* LevelCollision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000023 /* LevelCollision.swift */; };
+		10000023 /* MineLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000024 /* MineLevel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +55,9 @@
 		20000019 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		20000020 /* PlayerAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerAnimation.swift; sourceTree = "<group>"; };
 		20000021 /* PlayerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
+		20000022 /* MineTileset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineTileset.swift; sourceTree = "<group>"; };
+		20000023 /* LevelCollision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelCollision.swift; sourceTree = "<group>"; };
+		20000024 /* MineLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineLevel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +207,9 @@
 			isa = PBXGroup;
 			children = (
 				20000015 /* LevelFoundation.swift */,
+				20000022 /* MineTileset.swift */,
+				20000023 /* LevelCollision.swift */,
+				20000024 /* MineLevel.swift */,
 			);
 			path = Level;
 			sourceTree = "<group>";
@@ -300,6 +309,9 @@
 				10000018 /* Player.swift in Sources */,
 				10000019 /* PlayerAnimation.swift in Sources */,
 				10000020 /* PlayerController.swift in Sources */,
+				10000021 /* MineTileset.swift in Sources */,
+				10000022 /* LevelCollision.swift in Sources */,
+				10000023 /* MineLevel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

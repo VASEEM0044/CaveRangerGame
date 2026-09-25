@@ -173,6 +173,28 @@ Pre-configured masks:
 
 ---
 
+## Phase 3: Mine Environment & Terrain Collision
+
+### Mine Tileset & Environment (`MineTileset.swift` & `MineLevel.swift`)
+- Configured 2048×2048 `mine_cave_tileset.png` with 4×4 grid of 512×512 decorative entrance frames.
+- Color palette constants sampled from artwork: `rockDark`, `rockMedium`, `rockLight`, `caveDark`, `woodBrown`, `woodDark`, `groundDirt`, `ceilingDark`.
+- Background depth layer with dimmed mine entrance frames for parallax/cave atmosphere.
+- Multi-section cave level structure (2400 pt wide × 720 pt tall):
+  1. Starting cave corridor
+  2. Stepping platforms over lower pit
+  3. Lower cave section
+  4. Raised wooden trestle platform
+  5. Open cave area with high platform and exit tunnel
+
+### Optimized Collision Geometry (`LevelCollision.swift`)
+- Decoupled collision geometry from visual artwork — merged rectangular collision shapes.
+- One-way platforms for upper stepping ledges and wooden trestles.
+- Left and right world boundaries to prevent leaving the level.
+- Death pit fall detection (`deathY = -100`) resetting player to spawn point `(100, 180)`.
+- Camera clamped strictly within world boundaries `(2400 × 720)`.
+
+---
+
 ## Building and Continuous Integration (CI)
 
 To compile and verify the project using command-line tools on macOS or CI runners (GitHub Actions):
@@ -191,7 +213,7 @@ xcodebuild clean build \
 ## Next Development Steps
 
 1. ~~**Phase 2:** Player movement, platform physics, and jump curves.~~ ✅ Complete
-2. **Phase 3:** Tilemap rendering and cave level layout using `mine_cave_tileset.png`.
+2. ~~**Phase 3:** Tilemap rendering and cave level layout using `mine_cave_tileset.png`.~~ ✅ Complete
 3. **Phase 4:** Whip and revolver weapon mechanics.
 4. **Phase 5:** Snake enemy AI and combat resolution.
 5. **Phase 6:** Coins and exit portal triggers.

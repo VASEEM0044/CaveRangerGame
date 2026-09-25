@@ -2,12 +2,11 @@ import SpriteKit
 
 /// Primary SpriteKit scene hosting the platformer world, physics simulation, camera, and state manager.
 ///
-/// Phase 2 additions:
-/// - Player character instantiation and per-frame update
-/// - Keyboard input via PlayerController
-/// - Temporary test ground platform for movement/jump testing
-/// - Camera follow tracking
-/// - Physics contact handling for ground detection
+/// Phase 3 additions:
+/// - Underground mine level environment (`MineLevel`)
+/// - Replaced test platform with structured mine terrain and one-way platform mechanics
+/// - Camera clamping to level bounds (no out-of-bounds rendering)
+/// - Fall / death boundary reset to spawn position
 public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
     
     // MARK: - Core Components
@@ -17,6 +16,11 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
     
     /// Dedicated game camera.
     public let gameCamera = GameCamera()
+    
+    // MARK: - Level Components
+    
+    /// Mine environment container managing terrain visual artwork and collision geometry.
+    public private(set) var mineLevel: MineLevel!
     
     // MARK: - Player Components
     
@@ -35,8 +39,8 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
     public override func didMove(to view: SKView) {
         setupSceneProperties()
         setupPhysicsWorld()
+        setupLevel()
         setupCamera()
-        setupTestGround()
         setupPlayer()
         setupPlayerController()
         
@@ -49,7 +53,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         self.size = GameConfig.Display.logicalSize
         self.scaleMode = .aspectFit
         // Dark retro cave ambiance background color
-        self.backgroundColor = SKColor(red: 0.08, green: 0.06, blue: 0.10, alpha: 1.0)
+        self.backgroundColor = MineTileset.caveDark
     }
     
     private func setupPhysicsWorld() {
@@ -57,64 +61,28 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         physicsWorld.contactDelegate = self
     }
     
-    private func setupCamera() {
-        gameCamera.viewportSize = self.size
-        addChild(gameCamera)
-        self.camera = gameCamera
+    private func setupLevel() {
+        mineLevel = MineLevel()
+        addChild(mineLevel.levelNode)
     }
     
-    // MARK: - Test Ground (Temporary Development Platform)
-    
-    /// Creates a simple flat platform for testing player movement and collision.
-    /// This will be replaced by the tilemap-based level system in a later phase.
-    private func setupTestGround() {
-        let groundWidth: CGFloat = 1200.0
-        let groundHeight: CGFloat = 24.0
-        let groundY: CGFloat = 60.0
-        
-        let ground = SKSpriteNode(color: SKColor(red: 0.25, green: 0.18, blue: 0.12, alpha: 1.0),
-                                  size: CGSize(width: groundWidth, height: groundHeight))
-        ground.position = CGPoint(x: groundWidth / 2.0, y: groundY)
-        ground.name = "test_ground"
-        ground.zPosition = 1
-        
-        let body = SKPhysicsBody(rectangleOf: ground.size)
-        body.isDynamic = false
-        body.categoryBitMask = PhysicsCategory.ground.rawValue
-        body.collisionBitMask = PhysicsCategory.player.rawValue | PhysicsCategory.enemy.rawValue
-        body.contactTestBitMask = PhysicsCategory.player.rawValue
-        body.friction = 0.0
-        body.restitution = 0.0
-        ground.physicsBody = body
-        
-        addChild(ground)
-        
-        // Small platform to the right for jump testing
-        let platformWidth: CGFloat = 160.0
-        let platformHeight: CGFloat = 16.0
-        let platform = SKSpriteNode(color: SKColor(red: 0.30, green: 0.22, blue: 0.15, alpha: 1.0),
-                                    size: CGSize(width: platformWidth, height: platformHeight))
-        platform.position = CGPoint(x: 800.0, y: groundY + 70.0)
-        platform.name = "test_platform"
-        platform.zPosition = 1
-        
-        let platBody = SKPhysicsBody(rectangleOf: platform.size)
-        platBody.isDynamic = false
-        platBody.categoryBitMask = PhysicsCategory.ground.rawValue
-        platBody.collisionBitMask = PhysicsCategory.player.rawValue
-        platBody.contactTestBitMask = PhysicsCategory.player.rawValue
-        platBody.friction = 0.0
-        platBody.restitution = 0.0
-        platform.physicsBody = platBody
-        
-        addChild(platform)
+    private func setupCamera() {
+        gameCamera.viewportSize = self.size
+        gameCamera.levelBounds = CGRect(
+            x: 0,
+            y: 0,
+            width: MineLevel.worldWidth,
+            height: MineLevel.worldHeight
+        )
+        addChild(gameCamera)
+        self.camera = gameCamera
     }
     
     // MARK: - Player Setup
     
     private func setupPlayer() {
         player = Player()
-        player.position = GameConfig.Player.spawnPosition
+        player.position = MineLevel.spawnPosition
         addChild(player)
         
         // Snap camera immediately to player start
@@ -143,19 +111,32 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
             jumpRequested: playerController.jumpRequested
         )
         
-        // Prevent falling through the world floor
-        clampPlayerToWorldBounds()
+        // Safety check for level boundaries & death pit fall
+        checkLevelBoundaries()
         
-        // Camera follows the player with smooth interpolation
+        // Camera follows the player with smooth interpolation inside bounds
         gameCamera.update(towards: player.position)
     }
     
-    /// Safety clamp: if the player falls below the visible world, reset to ground level.
-    private func clampPlayerToWorldBounds() {
-        let floorY: CGFloat = 72.0 + player.size.height / 2.0  // ground top + half sprite
-        if player.position.y < floorY {
-            player.position.y = floorY
-            player.onGroundContact()
+    /// Handles falling out of bounds: resets player to spawn location.
+    private func checkLevelBoundaries() {
+        if player.position.y < MineLevel.deathY {
+            // Reset player to starting spawn position
+            player.position = MineLevel.spawnPosition
+            player.velocityX = 0.0
+            player.velocityY = 0.0
+            player.isGrounded = false
+            gameCamera.snap(to: player.position)
+        }
+        
+        // Clamp player X to world boundaries
+        let playerHalfW = player.size.width * 0.2
+        if player.position.x < playerHalfW {
+            player.position.x = playerHalfW
+            player.velocityX = max(0, player.velocityX)
+        } else if player.position.x > MineLevel.worldWidth - playerHalfW {
+            player.position.x = MineLevel.worldWidth - playerHalfW
+            player.velocityX = min(0, player.velocityX)
         }
     }
     
@@ -177,22 +158,19 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         // Player ↔ Ground separation
         if bodyA.categoryBitMask == PhysicsCategory.player.rawValue &&
            bodyB.categoryBitMask == PhysicsCategory.ground.rawValue {
-            // Only mark as airborne if the player is moving upward or not on any ground
             player.onGroundContactEnd()
         }
     }
     
-    /// Determines landing: the player must be contacting the ground from above.
+    /// Determines landing: the player must be contacting ground/platform from above.
     private func handlePlayerGroundContact(playerBody: SKPhysicsBody,
                                            groundBody: SKPhysicsBody,
                                            contact: SKPhysicsContact) {
-        // Contact normal points from A to B. If player (A) is above ground (B),
-        // the normal's Y component will be negative (pointing downward from player to ground).
         let normal = contact.contactNormal
         
-        // The player is landing on top if the contact normal has a significant downward Y component
-        // (meaning the ground surface is below the player).
-        if normal.dy < -0.5 {
+        // Contact normal points from A to B. If player (A) is landing on ground (B),
+        // the normal Y component is negative.
+        if normal.dy < -0.3 {
             player.onGroundContact()
         }
     }
