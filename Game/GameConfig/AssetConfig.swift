@@ -36,11 +36,12 @@ public enum AssetConfig {
     
     // MARK: - Gameplay Sprite Sheet Definitions
     
-    /// Cowboy player character sprite sheet (32 × 32 frame size).
+    /// Cowboy player character sprite sheet (128 × 128 frame size).
+    /// Sheet dimensions: 1536×1024 → 12 columns × 8 rows.
     public static let cowboyPlayer = SpriteSheetDefinition(
         fileName: "cowboy_player.png",
-        frameWidth: 32.0,
-        frameHeight: 32.0
+        frameWidth: 128.0,
+        frameHeight: 128.0
     )
     
     /// Snake enemy sprite sheet (64 × 64 frame size).

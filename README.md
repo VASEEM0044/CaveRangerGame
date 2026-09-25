@@ -25,7 +25,7 @@ CaveRangerGame/
 │
 ├── Assets/                          # Source artwork & sprite sheets (preserved intact)
 │   ├── icon.png                     # Application icon (treated separately from gameplay)
-│   ├── cowboy_player.png            # Player sprite sheet (32 × 32 frames)
+│   ├── cowboy_player.png            # Player sprite sheet (128 × 128 frames)
 │   ├── snake_enemy.png              # Snake enemy sprite sheet (64 × 64 frames)
 │   ├── coin.png                     # Coin collectible sprite sheet (64 × 64 frames)
 │   ├── whip.png                     # Whip weapon sprite sheet (64 × 64 frames)
@@ -56,7 +56,10 @@ CaveRangerGame/
     │   └── TextureCache.swift       # Thread-safe texture and subtexture caching
     │
     ├── Player/
-    │   └── PlayerFoundation.swift   # Architectural protocol for player character
+    │   ├── PlayerFoundation.swift   # Architectural protocol for player character
+    │   ├── Player.swift             # SKSpriteNode-based playable character
+    │   ├── PlayerAnimation.swift    # Animation state definitions & texture extraction
+    │   └── PlayerController.swift   # Keyboard input → movement commands
     ├── Enemies/
     │   └── EnemyFoundation.swift    # Architectural protocol for enemies & damage interactions
     ├── Weapons/
@@ -127,6 +130,49 @@ Pre-configured masks:
 
 ---
 
+## Phase 2: Player System
+
+### Player Character (`Player.swift`)
+- Custom kinematic movement model with configurable acceleration, deceleration, and max speed.
+- Jump with configurable force and manual gravity simulation for tight arcade platformer feel.
+- Physics body sized to ~45% width × 75% height of the sprite for smooth platform edges.
+- Anti-double-jump: jump only triggers when grounded.
+- Terminal velocity clamping and world floor safety net.
+
+### Animation State Machine (`PlayerAnimation.swift`)
+- All 10 animation states defined with row/frame mappings to the 128×128 sprite sheet.
+- Phase 2 implements: `idle`, `run`, `jump`, `fall`.
+- Remaining states (`land`, `climb`, `whipAttack`, `shootAttack`, `hurt`, `death`) configured for future phases.
+- State transitions only trigger animation restarts when the state actually changes.
+- Textures pre-extracted and cached via `SpriteSheet` + `TextureCache`.
+
+### Input System (`PlayerController.swift`)
+- `GCKeyboard` (Game Controller framework) for iOS hardware keyboard support.
+- macOS Catalyst / Simulator key event forwarding via `keyDown`/`keyUp`.
+- Controls: `A`/`←` move left, `D`/`→` move right, `Space` jump.
+- Edge-triggered jump (single press = single jump, holding doesn't repeat).
+
+### Keyboard Controls (Development)
+
+| Key | Action |
+| :---: | :--- |
+| `A` / `←` | Move left |
+| `D` / `→` | Move right |
+| `Space` | Jump |
+
+### Test Ground
+- Temporary flat platform (1200 pt wide) + elevated jump test platform.
+- Uses `PhysicsCategory.ground` for proper collision and contact detection.
+- Will be replaced by the tilemap level system in Phase 3.
+
+### Camera
+- `GameCamera` smoothly follows the player position each frame.
+
+### Debug
+- `GameConfig.Debug.showPlayerDebug`: when `true`, renders position/velocity/grounded overlay above the player.
+
+---
+
 ## Building and Continuous Integration (CI)
 
 To compile and verify the project using command-line tools on macOS or CI runners (GitHub Actions):
@@ -144,8 +190,7 @@ xcodebuild clean build \
 
 ## Next Development Steps
 
-The foundation is fully prepared for sequential gameplay implementation:
-1. **Phase 2:** Player movement, platform physics, and jump curves.
+1. ~~**Phase 2:** Player movement, platform physics, and jump curves.~~ ✅ Complete
 2. **Phase 3:** Tilemap rendering and cave level layout using `mine_cave_tileset.png`.
 3. **Phase 4:** Whip and revolver weapon mechanics.
 4. **Phase 5:** Snake enemy AI and combat resolution.
