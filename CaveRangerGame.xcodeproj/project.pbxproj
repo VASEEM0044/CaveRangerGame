@@ -36,6 +36,9 @@
 		10000027 /* Whip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000028 /* Whip.swift */; };
 		10000028 /* Revolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000029 /* Revolver.swift */; };
 		10000029 /* Bullet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000030 /* Bullet.swift */; };
+		10000030 /* Collectible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000031 /* Collectible.swift */; };
+		10000031 /* Coin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000032 /* Coin.swift */; };
+		10000032 /* LevelStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000033 /* LevelStats.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +73,9 @@
 		20000028 /* Whip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Whip.swift; sourceTree = "<group>"; };
 		20000029 /* Revolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Revolver.swift; sourceTree = "<group>"; };
 		20000030 /* Bullet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bullet.swift; sourceTree = "<group>"; };
+		20000031 /* Collectible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectible.swift; sourceTree = "<group>"; };
+		20000032 /* Coin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coin.swift; sourceTree = "<group>"; };
+		20000033 /* LevelStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelStats.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,6 +223,8 @@
 			isa = PBXGroup;
 			children = (
 				20000014 /* CollectibleFoundation.swift */,
+				20000031 /* Collectible.swift */,
+				20000032 /* Coin.swift */,
 			);
 			path = Collectibles;
 			sourceTree = "<group>";
@@ -228,6 +236,7 @@
 				20000022 /* MineTileset.swift */,
 				20000023 /* LevelCollision.swift */,
 				20000024 /* MineLevel.swift */,
+				20000033 /* LevelStats.swift */,
 			);
 			path = Level;
 			sourceTree = "<group>";
@@ -336,6 +345,9 @@
 				10000027 /* Whip.swift in Sources */,
 				10000028 /* Revolver.swift in Sources */,
 				10000029 /* Bullet.swift in Sources */,
+				10000030 /* Collectible.swift in Sources */,
+				10000031 /* Coin.swift in Sources */,
+				10000032 /* LevelStats.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

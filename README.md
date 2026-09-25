@@ -260,6 +260,27 @@ Pre-configured masks:
 
 ---
 
+## Phase 7: Coin & Collectible System
+
+### Collectible Abstraction & Coin Node (`Collectible.swift`, `Coin.swift` & `LevelStats.swift`)
+- Base `Collectible` class implementing `CollectibleEntity` interface.
+- `Coin` node integrated with `coin.png` (2048×2048, 64×64 frame grid, 32×32 cells) and cached texture animations via `CoinAnimations`:
+  - `ROTATION` (Row 1, 8 frames, 0.10s/frame, continuous spin)
+  - `COLLECT` (Row 2, 8 frames, 0.07s/frame, pickup sequence)
+  - `SPARKLE` (Row 3, 8 frames, 0.07s/frame, pickup splash effect)
+- `LevelStats` tracker managing current-session coin counts (`coinsCollected`, `totalCoins`) without using persistent storage.
+
+### Pickup Mechanics & Level Distribution
+- **Physics Contact & Pick-up**: Player ↔ Coin contact triggers `onCollect(by:)`, which immediately disables physics sensor body (preventing double pickup), runs `COLLECT` → `SPARKLE` pickup sequence, records `value = 1` in `LevelStats`, and removes node.
+- **Level Distribution**: 20 gold coins placed deliberately across all 5 mine level sections along exploration paths and platforms:
+  - Section 1 (Corridor): 3 coins
+  - Section 2 (Stepping Platforms): 4 coins
+  - Section 3 (Lower Cave): 3 coins
+  - Section 4 (Wooden Trestle): 5 coins
+  - Section 5 (Open Cave Area): 5 coins
+
+---
+
 ## Building and Continuous Integration (CI)
 
 To compile and verify the project using command-line tools on macOS or CI runners (GitHub Actions):
@@ -282,5 +303,6 @@ xcodebuild clean build \
 3. ~~**Phase 4:** Snake enemy system (AI, animations, combat contact, death).~~ ✅ Complete
 4. ~~**Phase 5:** Whip combat system (animations, J/X input, melee hitbox, snake damage).~~ ✅ Complete
 5. ~~**Phase 6:** Revolver & bullet combat system (fire, reload, ammo, muzzle flash, projectile contacts).~~ ✅ Complete
-6. **Phase 7:** Coins & exit portal triggers.
-7. **Phase 8:** On-screen controls, HUD, and pause menu overlays.
+6. ~~**Phase 7:** Coin & collectible system (animations, pickup sequence, level distribution, level stats).~~ ✅ Complete
+7. **Phase 8:** Mine exit portal & level completion.
+8. **Phase 9:** On-screen controls, HUD, and pause menu overlays.

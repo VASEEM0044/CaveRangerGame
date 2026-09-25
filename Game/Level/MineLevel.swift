@@ -28,6 +28,9 @@ public final class MineLevel {
     /// Active snake enemies in the level.
     public private(set) var snakes: [SnakeEnemy] = []
     
+    /// Placed gold coins in the level.
+    public private(set) var coins: [Coin] = []
+    
     // MARK: - Initialization
     
     public init() {
@@ -38,12 +41,13 @@ public final class MineLevel {
         buildBackground()
         buildLevelGeometryAndVisuals()
         spawnSnakes()
+        spawnCoins()
         
         levelNode.addChild(collision.collisionNode)
         levelNode.addChild(collision.boundaryNode)
     }
     
-    // MARK: - Enemy Spawning
+    // MARK: - Spawning Methods
     
     private func spawnSnakes() {
         // Place 3 test snakes at reachable ground locations
@@ -57,6 +61,47 @@ public final class MineLevel {
             let snake = SnakeEnemy(spawnPosition: pos)
             snakes.append(snake)
             levelNode.addChild(snake)
+        }
+    }
+    
+    private func spawnCoins() {
+        // 20 gold coins distributed across 5 level sections
+        let coinPositions: [CGPoint] = [
+            // Section 1: Starting Corridor (3)
+            CGPoint(x: 200.0, y: 155.0),
+            CGPoint(x: 320.0, y: 155.0),
+            CGPoint(x: 450.0, y: 155.0),
+            
+            // Section 2: Stepping Platforms & Gap (4)
+            CGPoint(x: 630.0, y: 70.0),
+            CGPoint(x: 740.0, y: 170.0),
+            CGPoint(x: 890.0, y: 220.0),
+            CGPoint(x: 950.0, y: 220.0),
+            
+            // Section 3: Lower Cave Section (3)
+            CGPoint(x: 1080.0, y: 195.0),
+            CGPoint(x: 1200.0, y: 195.0),
+            CGPoint(x: 1320.0, y: 195.0),
+            
+            // Section 4: Raised Wooden Trestle & Ledge (5)
+            CGPoint(x: 1440.0, y: 255.0),
+            CGPoint(x: 1490.0, y: 255.0),
+            CGPoint(x: 1580.0, y: 315.0),
+            CGPoint(x: 1650.0, y: 315.0),
+            CGPoint(x: 1720.0, y: 315.0),
+            
+            // Section 5: Open Cave & High Platform (5)
+            CGPoint(x: 1860.0, y: 175.0),
+            CGPoint(x: 2000.0, y: 295.0),
+            CGPoint(x: 2080.0, y: 295.0),
+            CGPoint(x: 2200.0, y: 175.0),
+            CGPoint(x: 2300.0, y: 175.0)
+        ]
+        
+        for pos in coinPositions {
+            let coin = Coin(position: pos)
+            coins.append(coin)
+            levelNode.addChild(coin)
         }
     }
     

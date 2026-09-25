@@ -17,10 +17,11 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
     /// Dedicated game camera.
     public let gameCamera = GameCamera()
     
-    // MARK: - Level Components
-    
     /// Mine environment container managing terrain visual artwork and collision geometry.
     public private(set) var mineLevel: MineLevel!
+    
+    /// Current level statistics tracker.
+    public let levelStats = LevelStats()
     
     // MARK: - Player Components
     
@@ -67,6 +68,13 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
     private func setupLevel() {
         mineLevel = MineLevel()
         addChild(mineLevel.levelNode)
+        
+        levelStats.setTotalCoins(mineLevel.coins.count)
+        for coin in mineLevel.coins {
+            coin.onCollectedHandler = { [weak self] c in
+                self?.levelStats.recordCoinCollected(value: c.value)
+            }
+        }
     }
     
     private func setupCamera() {
@@ -191,6 +199,14 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
            bodyB.categoryBitMask == PhysicsCategory.enemy.rawValue {
             if let snake = bodyB.node as? SnakeEnemy, snake.isAlive {
                 player.takeDamage(amount: snake.damage)
+            }
+        }
+        
+        // Player ↔ Collectible contact
+        if bodyA.categoryBitMask == PhysicsCategory.player.rawValue &&
+           bodyB.categoryBitMask == PhysicsCategory.collectible.rawValue {
+            if let collectible = bodyB.node as? CollectibleEntity {
+                collectible.onCollect(by: player)
             }
         }
         
