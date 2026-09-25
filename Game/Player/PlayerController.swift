@@ -13,9 +13,11 @@ public final class PlayerController {
     private var leftPressed: Bool = false
     private var rightPressed: Bool = false
     private var jumpPressed: Bool = false
+    private var attackPressed: Bool = false
     
-    /// Consumed flag prevents holding space from re-triggering jump every frame.
+    /// Consumed flags prevent holding keys from re-triggering jump/attack every frame.
     private var jumpConsumed: Bool = false
+    private var attackConsumed: Bool = false
     
     // MARK: - Computed Input
     
@@ -31,6 +33,15 @@ public final class PlayerController {
     public var jumpRequested: Bool {
         if jumpPressed && !jumpConsumed {
             jumpConsumed = true
+            return true
+        }
+        return false
+    }
+    
+    /// Returns true exactly once per attack press (edge-triggered via J or X).
+    public var attackRequested: Bool {
+        if attackPressed && !attackConsumed {
+            attackConsumed = true
             return true
         }
         return false
@@ -88,6 +99,8 @@ public final class PlayerController {
         switch keyCode {
         case 0:   handleKeyChange(keyCode: .keyA, pressed: pressed)          // A
         case 2:   handleKeyChange(keyCode: .keyD, pressed: pressed)          // D
+        case 7:   handleKeyChange(keyCode: .keyX, pressed: pressed)          // X (Attack)
+        case 38:  handleKeyChange(keyCode: .keyJ, pressed: pressed)          // J (Attack)
         case 49:  handleKeyChange(keyCode: .spacebar, pressed: pressed)      // Space
         case 123: handleKeyChange(keyCode: .leftArrow, pressed: pressed)     // Left Arrow
         case 124: handleKeyChange(keyCode: .rightArrow, pressed: pressed)    // Right Arrow
@@ -110,6 +123,12 @@ public final class PlayerController {
             jumpPressed = pressed
             if !pressed {
                 jumpConsumed = false   // Reset consumed flag on key release
+            }
+            
+        case .keyJ, .keyX:
+            attackPressed = pressed
+            if !pressed {
+                attackConsumed = false // Reset consumed flag on key release
             }
             
         default:

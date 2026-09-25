@@ -58,6 +58,18 @@ public enum GameConfig {
         public static let renderScale: CGFloat = 0.5
     }
     
+    // MARK: - Weapons Configuration
+    public enum Weapons {
+        /// Base damage inflicted by a single whip strike.
+        public static let whipDamage: Int = 1
+        
+        /// Cooldown time in seconds between consecutive whip attacks.
+        public static let whipCooldown: TimeInterval = 0.40
+        
+        /// Reach distance of the whip attack hitbox in points.
+        public static let whipReach: CGFloat = 55.0
+    }
+    
     // MARK: - Debug Settings
     public enum Debug {
         /// Toggle physics collision and contact outline display on SKView.

@@ -55,6 +55,11 @@ public final class Player: SKSpriteNode, PlayerEntity {
     
     private var debugLabel: SKLabelNode?
     
+    // MARK: - Weapon Properties
+    
+    /// Currently equipped Whip weapon.
+    public private(set) var whip: Whip!
+    
     // MARK: - Initialization
     
     /// Creates a new Player node with the first idle frame as the initial texture.
@@ -73,12 +78,33 @@ public final class Player: SKSpriteNode, PlayerEntity {
         self.name = "player"
         self.zPosition = 10
         
+        setupWeapon()
         setupPhysicsBody()
         setupDebugLabel()
     }
     
+    private func setupWeapon() {
+        whip = Whip()
+        addChild(whip)
+    }
+    
     public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) is not supported for Player")
+    }
+    
+    // MARK: - Attack Action
+    
+    /// Triggers a whip attack towards current facing direction if not on cooldown.
+    public func performWhipAttack(enemies: [EnemyEntity], parentScene: SKScene) {
+        guard isAlive && !whip.isAttacking else { return }
+        
+        setAnimation(.whipAttack)
+        whip.performAttack(
+            playerPosition: self.position,
+            facing: facingDirection,
+            parentScene: parentScene,
+            enemies: enemies
+        )
     }
     
     // MARK: - Physics Body
@@ -135,6 +161,7 @@ public final class Player: SKSpriteNode, PlayerEntity {
     public func update(deltaTime: TimeInterval, inputDirection: CGFloat, jumpRequested: Bool) {
         let dt = CGFloat(min(deltaTime, 1.0 / 30.0)) // Cap delta to prevent spiral on lag spikes
         
+        whip.update(deltaTime: deltaTime)
         applyHorizontalMovement(direction: inputDirection, dt: dt)
         applyGravityAndJump(jumpRequested: jumpRequested, dt: dt)
         applyVelocity(dt: dt)

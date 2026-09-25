@@ -32,6 +32,8 @@
 		10000023 /* MineLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000024 /* MineLevel.swift */; };
 		10000024 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000025 /* Enemy.swift */; };
 		10000025 /* SnakeEnemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000026 /* SnakeEnemy.swift */; };
+		10000026 /* Weapon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000027 /* Weapon.swift */; };
+		10000027 /* Whip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000028 /* Whip.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,6 +64,8 @@
 		20000024 /* MineLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineLevel.swift; sourceTree = "<group>"; };
 		20000025 /* Enemy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
 		20000026 /* SnakeEnemy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnakeEnemy.swift; sourceTree = "<group>"; };
+		20000027 /* Weapon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weapon.swift; sourceTree = "<group>"; };
+		20000028 /* Whip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Whip.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +201,8 @@
 			isa = PBXGroup;
 			children = (
 				20000013 /* WeaponFoundation.swift */,
+				20000027 /* Weapon.swift */,
+				20000028 /* Whip.swift */,
 			);
 			path = Weapons;
 			sourceTree = "<group>";
@@ -320,6 +326,8 @@
 				10000023 /* MineLevel.swift in Sources */,
 				10000024 /* Enemy.swift in Sources */,
 				10000025 /* SnakeEnemy.swift in Sources */,
+				10000026 /* Weapon.swift in Sources */,
+				10000027 /* Whip.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

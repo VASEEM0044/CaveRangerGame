@@ -218,6 +218,24 @@ Pre-configured masks:
 
 ---
 
+## Phase 5: Whip Combat System
+
+### Base Weapon Abstraction & Whip Weapon (`Weapon.swift` & `Whip.swift`)
+- Base `Weapon` class implementing `WeaponEntity` protocol for weapon expansion (Whip & Revolver).
+- `Whip` node attached to the player with animation sequence via `WhipAnimations`:
+  - Sequence: `DRAW` (0.06s/frame) → `ATTACK` (0.07s/frame) → `IMPACT` (0.08s/frame) → `RETURN` (0.07s/frame)
+- Integrated with `whip.png` (2048×2048, 64×64 frames).
+
+### Controls, Timing & Melee Hit Detection
+- **Input**: `J` or `X` keys trigger the whip attack.
+- **Cooldown**: `0.40s` cooldown between consecutive attacks (`GameConfig.Weapons.whipCooldown`).
+- **Hit Detection**: Active rectangular hitbox (`reach = 55pt`, `height = 28pt`) extending in front of the player based on facing direction.
+- **Damage & Anti-Multi-Hit**: Inflicts `whipDamage = 1` to enemies in range. Uses a per-swing `Set<ObjectIdentifier>` to ensure each enemy is hit only once per attack swing.
+- **Snake Combat Response**: Whip hits trigger `snake.takeDamage(amount: 1)`, causing hurt animations, health deduction, and eventual death flow.
+- **Debug Hitbox**: Displays yellow outline around the active attack range when `GameConfig.Debug.showPlayerDebug` is enabled.
+
+---
+
 ## Building and Continuous Integration (CI)
 
 To compile and verify the project using command-line tools on macOS or CI runners (GitHub Actions):
@@ -238,6 +256,7 @@ xcodebuild clean build \
 1. ~~**Phase 2:** Player movement, platform physics, and jump curves.~~ ✅ Complete
 2. ~~**Phase 3:** Tilemap rendering and cave level layout using `mine_cave_tileset.png`.~~ ✅ Complete
 3. ~~**Phase 4:** Snake enemy system (AI, animations, combat contact, death).~~ ✅ Complete
-4. **Phase 5:** Whip and revolver weapon mechanics.
-5. **Phase 6:** Coins and exit portal triggers.
-6. **Phase 7:** On-screen controls, HUD, and pause menu overlays.
+4. ~~**Phase 5:** Whip combat system (animations, J/X input, melee hitbox, snake damage).~~ ✅ Complete
+5. **Phase 6:** Revolver weapon & projectile ballistics.
+6. **Phase 7:** Coins & exit portal triggers.
+7. **Phase 8:** On-screen controls, HUD, and pause menu overlays.

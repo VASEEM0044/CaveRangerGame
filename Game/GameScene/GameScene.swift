@@ -111,6 +111,11 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
             jumpRequested: playerController.jumpRequested
         )
         
+        // Handle whip attack input (J or X key)
+        if playerController.attackRequested {
+            player.performWhipAttack(enemies: mineLevel.snakes, parentScene: self)
+        }
+        
         // Update all active snake enemies in the level
         for snake in mineLevel.snakes {
             snake.update(deltaTime: deltaTime, currentTime: currentTime, player: player)
