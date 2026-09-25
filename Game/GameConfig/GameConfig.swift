@@ -68,6 +68,24 @@ public enum GameConfig {
         
         /// Reach distance of the whip attack hitbox in points.
         public static let whipReach: CGFloat = 55.0
+        
+        /// Base damage inflicted by a single revolver bullet.
+        public static let revolverDamage: Int = 1
+        
+        /// Cooldown time in seconds between consecutive revolver shots.
+        public static let revolverFireCooldown: TimeInterval = 0.30
+        
+        /// Maximum rounds per revolver magazine.
+        public static let revolverMagazineSize: Int = 6
+        
+        /// Duration in seconds to reload the revolver.
+        public static let revolverReloadTime: TimeInterval = 1.0
+        
+        /// Horizontal velocity of bullet in points per second.
+        public static let bulletSpeed: CGFloat = 800.0
+        
+        /// Maximum flight duration of bullet in seconds.
+        public static let bulletLifetime: TimeInterval = 1.5
     }
     
     // MARK: - Debug Settings

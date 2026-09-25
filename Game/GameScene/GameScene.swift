@@ -30,6 +30,9 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
     /// Keyboard input controller feeding movement commands to the player.
     public private(set) var playerController: PlayerController!
     
+    /// Tracked active flying bullets in the scene.
+    private var activeBullets: [Bullet] = []
+    
     // MARK: - Timing Properties
     
     private var lastUpdateTime: TimeInterval = 0
@@ -116,6 +119,27 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
             player.performWhipAttack(enemies: mineLevel.snakes, parentScene: self)
         }
         
+        // Handle revolver fire input (K key)
+        if playerController.fireRequested {
+            if let bullet = player.fireRevolver(parentScene: self) {
+                activeBullets.append(bullet)
+            }
+        }
+        
+        // Handle revolver reload input (R key)
+        if playerController.reloadRequested {
+            player.reloadRevolver()
+        }
+        
+        // Handle revolver aiming input (L key)
+        player.setAiming(playerController.isAiming)
+        
+        // Update flying bullets and purge removed ones
+        activeBullets.removeAll { $0.parent == nil }
+        for bullet in activeBullets {
+            bullet.update(deltaTime: deltaTime)
+        }
+        
         // Update all active snake enemies in the level
         for snake in mineLevel.snakes {
             snake.update(deltaTime: deltaTime, currentTime: currentTime, player: player)
@@ -163,9 +187,27 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         
         // Player ↔ Enemy contact
         if bodyA.categoryBitMask == PhysicsCategory.player.rawValue &&
+           bodyB.categoryBitMask == PhysicsCategory.ground.rawValue == false &&
            bodyB.categoryBitMask == PhysicsCategory.enemy.rawValue {
             if let snake = bodyB.node as? SnakeEnemy, snake.isAlive {
                 player.takeDamage(amount: snake.damage)
+            }
+        }
+        
+        // Bullet ↔ Enemy contact
+        if bodyA.categoryBitMask == PhysicsCategory.enemy.rawValue &&
+           bodyB.categoryBitMask == PhysicsCategory.projectile.rawValue {
+            if let enemy = bodyA.node as? EnemyEntity, let bullet = bodyB.node as? Bullet {
+                enemy.takeDamage(amount: bullet.damage)
+                bullet.destroySelf(showImpact: true)
+            }
+        }
+        
+        // Bullet ↔ Ground contact
+        if bodyA.categoryBitMask == PhysicsCategory.ground.rawValue &&
+           bodyB.categoryBitMask == PhysicsCategory.projectile.rawValue {
+            if let bullet = bodyB.node as? Bullet {
+                bullet.destroySelf(showImpact: true)
             }
         }
     }

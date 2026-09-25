@@ -236,6 +236,30 @@ Pre-configured masks:
 
 ---
 
+## Phase 6: Revolver & Bullet Combat System
+
+### Revolver & Bullet Mechanics (`Revolver.swift` & `Bullet.swift`)
+- `Revolver` firearm class extending `Weapon` and integrated with `revolver.png` (2048×2048, 64×64 frames).
+- Animations via `RevolverAnimations`: `HELD` (Row 0), `AIM` (Row 1), `FIRE` (Row 2), `RECOIL` (Row 3), `RELOAD` (Row 4), `MUZZLE FLASH` (Row 5), `BULLET` (Row 6), `IMPACT` (Row 7).
+- Lightweight `Bullet` projectile node traveling horizontally at `800.0 pt/s` with a max lifetime of `1.5s`.
+
+### Controls, Magazine & Collision
+- **Controls**:
+  - `K`: Fire Revolver
+  - `R`: Reload Magazine
+  - `L`: Hold to Aim
+- **Ammunition & Reload**:
+  - 6 rounds per magazine (`magazineSize = 6`).
+  - Reload sequence takes `1.0s` (`revolverReloadTime = 1.0s`), restoring magazine to full capacity while disabling firing.
+  - Automatically triggers reload when attempting to fire with 0 rounds.
+- **Fire Cooldown**: `0.30s` cooldown between consecutive shots (`revolverFireCooldown = 0.30s`).
+- **Muzzle Flash & Recoil**: Brief 1-shot muzzle flash sprite near barrel tip and recoil sprite sequence on fire.
+- **Physics Contact & Hit Resolution**:
+  - Bullet ↔ Enemy: Inflicts `revolverDamage = 1` to `SnakeEnemy`, triggers enemy `takeDamage`, spawns impact splash visual, and destroys bullet.
+  - Bullet ↔ Terrain: Spawns impact splash visual on cave wall/ground contact and destroys bullet.
+
+---
+
 ## Building and Continuous Integration (CI)
 
 To compile and verify the project using command-line tools on macOS or CI runners (GitHub Actions):
@@ -257,6 +281,6 @@ xcodebuild clean build \
 2. ~~**Phase 3:** Tilemap rendering and cave level layout using `mine_cave_tileset.png`.~~ ✅ Complete
 3. ~~**Phase 4:** Snake enemy system (AI, animations, combat contact, death).~~ ✅ Complete
 4. ~~**Phase 5:** Whip combat system (animations, J/X input, melee hitbox, snake damage).~~ ✅ Complete
-5. **Phase 6:** Revolver weapon & projectile ballistics.
+5. ~~**Phase 6:** Revolver & bullet combat system (fire, reload, ammo, muzzle flash, projectile contacts).~~ ✅ Complete
 6. **Phase 7:** Coins & exit portal triggers.
 7. **Phase 8:** On-screen controls, HUD, and pause menu overlays.

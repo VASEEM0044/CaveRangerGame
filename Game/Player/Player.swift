@@ -60,6 +60,9 @@ public final class Player: SKSpriteNode, PlayerEntity {
     /// Currently equipped Whip weapon.
     public private(set) var whip: Whip!
     
+    /// Currently equipped Revolver firearm.
+    public private(set) var revolver: Revolver!
+    
     // MARK: - Initialization
     
     /// Creates a new Player node with the first idle frame as the initial texture.
@@ -86,17 +89,20 @@ public final class Player: SKSpriteNode, PlayerEntity {
     private func setupWeapon() {
         whip = Whip()
         addChild(whip)
+        
+        revolver = Revolver()
+        addChild(revolver)
     }
     
     public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) is not supported for Player")
     }
     
-    // MARK: - Attack Action
+    // MARK: - Attack Actions
     
     /// Triggers a whip attack towards current facing direction if not on cooldown.
     public func performWhipAttack(enemies: [EnemyEntity], parentScene: SKScene) {
-        guard isAlive && !whip.isAttacking else { return }
+        guard isAlive && !whip.isAttacking && !revolver.isReloading else { return }
         
         setAnimation(.whipAttack)
         whip.performAttack(
@@ -105,6 +111,30 @@ public final class Player: SKSpriteNode, PlayerEntity {
             parentScene: parentScene,
             enemies: enemies
         )
+    }
+    
+    /// Fires the revolver weapon if available and loaded.
+    @discardableResult
+    public func fireRevolver(parentScene: SKScene) -> Bullet? {
+        guard isAlive && !whip.isAttacking else { return nil }
+        
+        setAnimation(.shootAttack)
+        return revolver.fire(
+            playerPosition: self.position,
+            facing: facingDirection,
+            scene: parentScene
+        )
+    }
+    
+    /// Initiates revolver reload sequence.
+    public func reloadRevolver() {
+        guard isAlive && !whip.isAttacking else { return }
+        revolver.reload()
+    }
+    
+    /// Sets revolver aiming state.
+    public func setAiming(_ aiming: Bool) {
+        revolver.setAiming(aiming)
     }
     
     // MARK: - Physics Body
@@ -162,6 +192,9 @@ public final class Player: SKSpriteNode, PlayerEntity {
         let dt = CGFloat(min(deltaTime, 1.0 / 30.0)) // Cap delta to prevent spiral on lag spikes
         
         whip.update(deltaTime: deltaTime)
+        revolver.update(deltaTime: deltaTime)
+        revolver.updatePosition(playerPosition: self.position, facing: facingDirection)
+        
         applyHorizontalMovement(direction: inputDirection, dt: dt)
         applyGravityAndJump(jumpRequested: jumpRequested, dt: dt)
         applyVelocity(dt: dt)

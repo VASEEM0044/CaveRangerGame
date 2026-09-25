@@ -14,10 +14,15 @@ public final class PlayerController {
     private var rightPressed: Bool = false
     private var jumpPressed: Bool = false
     private var attackPressed: Bool = false
+    private var firePressed: Bool = false
+    private var reloadPressed: Bool = false
+    public private(set) var isAiming: Bool = false
     
-    /// Consumed flags prevent holding keys from re-triggering jump/attack every frame.
+    /// Consumed flags prevent holding keys from re-triggering actions every frame.
     private var jumpConsumed: Bool = false
     private var attackConsumed: Bool = false
+    private var fireConsumed: Bool = false
+    private var reloadConsumed: Bool = false
     
     // MARK: - Computed Input
     
@@ -38,10 +43,28 @@ public final class PlayerController {
         return false
     }
     
-    /// Returns true exactly once per attack press (edge-triggered via J or X).
+    /// Returns true exactly once per whip attack press (edge-triggered via J or X).
     public var attackRequested: Bool {
         if attackPressed && !attackConsumed {
             attackConsumed = true
+            return true
+        }
+        return false
+    }
+    
+    /// Returns true exactly once per revolver fire press (edge-triggered via K).
+    public var fireRequested: Bool {
+        if firePressed && !fireConsumed {
+            fireConsumed = true
+            return true
+        }
+        return false
+    }
+    
+    /// Returns true exactly once per reload press (edge-triggered via R).
+    public var reloadRequested: Bool {
+        if reloadPressed && !reloadConsumed {
+            reloadConsumed = true
             return true
         }
         return false
@@ -99,8 +122,11 @@ public final class PlayerController {
         switch keyCode {
         case 0:   handleKeyChange(keyCode: .keyA, pressed: pressed)          // A
         case 2:   handleKeyChange(keyCode: .keyD, pressed: pressed)          // D
-        case 7:   handleKeyChange(keyCode: .keyX, pressed: pressed)          // X (Attack)
-        case 38:  handleKeyChange(keyCode: .keyJ, pressed: pressed)          // J (Attack)
+        case 7:   handleKeyChange(keyCode: .keyX, pressed: pressed)          // X (Whip)
+        case 15:  handleKeyChange(keyCode: .keyR, pressed: pressed)          // R (Reload)
+        case 37:  handleKeyChange(keyCode: .keyL, pressed: pressed)          // L (Aim)
+        case 38:  handleKeyChange(keyCode: .keyJ, pressed: pressed)          // J (Whip)
+        case 40:  handleKeyChange(keyCode: .keyK, pressed: pressed)          // K (Fire Revolver)
         case 49:  handleKeyChange(keyCode: .spacebar, pressed: pressed)      // Space
         case 123: handleKeyChange(keyCode: .leftArrow, pressed: pressed)     // Left Arrow
         case 124: handleKeyChange(keyCode: .rightArrow, pressed: pressed)    // Right Arrow
@@ -130,6 +156,21 @@ public final class PlayerController {
             if !pressed {
                 attackConsumed = false // Reset consumed flag on key release
             }
+            
+        case .keyK:
+            firePressed = pressed
+            if !pressed {
+                fireConsumed = false   // Reset consumed flag on key release
+            }
+            
+        case .keyR:
+            reloadPressed = pressed
+            if !pressed {
+                reloadConsumed = false // Reset consumed flag on key release
+            }
+            
+        case .keyL:
+            isAiming = pressed
             
         default:
             break
