@@ -30,6 +30,8 @@
 		10000021 /* MineTileset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000022 /* MineTileset.swift */; };
 		10000022 /* LevelCollision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000023 /* LevelCollision.swift */; };
 		10000023 /* MineLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000024 /* MineLevel.swift */; };
+		10000024 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000025 /* Enemy.swift */; };
+		10000025 /* SnakeEnemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000026 /* SnakeEnemy.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +60,8 @@
 		20000022 /* MineTileset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineTileset.swift; sourceTree = "<group>"; };
 		20000023 /* LevelCollision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelCollision.swift; sourceTree = "<group>"; };
 		20000024 /* MineLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineLevel.swift; sourceTree = "<group>"; };
+		20000025 /* Enemy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
+		20000026 /* SnakeEnemy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnakeEnemy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,6 +187,8 @@
 			isa = PBXGroup;
 			children = (
 				20000012 /* EnemyFoundation.swift */,
+				20000025 /* Enemy.swift */,
+				20000026 /* SnakeEnemy.swift */,
 			);
 			path = Enemies;
 			sourceTree = "<group>";
@@ -312,6 +318,8 @@
 				10000021 /* MineTileset.swift in Sources */,
 				10000022 /* LevelCollision.swift in Sources */,
 				10000023 /* MineLevel.swift in Sources */,
+				10000024 /* Enemy.swift in Sources */,
+				10000025 /* SnakeEnemy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

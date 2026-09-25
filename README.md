@@ -195,6 +195,29 @@ Pre-configured masks:
 
 ---
 
+## Phase 4: Snake Enemy System
+
+### Base Enemy Abstraction & Snake Enemy (`Enemy.swift` & `SnakeEnemy.swift`)
+- Base `Enemy` class implementing `EnemyEntity` interface for future enemy expansion.
+- `SnakeEnemy` node with 6-state AI state machine: `idle`, `patrol`, `chase`, `attack`, `hurt`, `dead`.
+- Integrated with `snake_enemy.png` (2048×2048, 64×64 frame grid, 32×32 cells) and cached texture animations via `SnakeAnimations`:
+  - `IDLE` (8 frames, 0.12s/frame)
+  - `SLITHER` (8 frames, 0.09s/frame)
+  - `FAST` (8 frames, 0.07s/frame)
+  - `ATTACK` (8 frames, 0.08s/frame)
+  - `HURT` (4 frames, 0.10s/frame)
+  - `DEATH` (8 frames, 0.10s/frame)
+
+### AI Behavior & Player Interaction
+- **Patrol**: Snake slowly patrols horizontal radius (±70pt) around spawn point, turning when reaching boundary or wall.
+- **Player Detection & Chase**: Distance check (`detectionRange = 160pt`). Switches from patrol to chase when player enters range, accelerating to fast speed when close.
+- **Attack & Damage**: Triggers attack animation when player within `attackRange = 36pt` with a 1.4s cooldown. Calls `player.takeDamage(amount: 1)`.
+- **Player Response**: Player receives 1.0s invulnerability flashing, slight knockback impulse, and hurt animation without per-frame damage spam.
+- **Death**: On reaching 0 health, snake plays death animation, disables physics/collision, and fades out.
+- **Placement**: 3 test snakes spawned in MineLevel (Starting corridor, Lower cave, Open cave area).
+
+---
+
 ## Building and Continuous Integration (CI)
 
 To compile and verify the project using command-line tools on macOS or CI runners (GitHub Actions):
@@ -214,7 +237,7 @@ xcodebuild clean build \
 
 1. ~~**Phase 2:** Player movement, platform physics, and jump curves.~~ ✅ Complete
 2. ~~**Phase 3:** Tilemap rendering and cave level layout using `mine_cave_tileset.png`.~~ ✅ Complete
-3. **Phase 4:** Whip and revolver weapon mechanics.
-4. **Phase 5:** Snake enemy AI and combat resolution.
+3. ~~**Phase 4:** Snake enemy system (AI, animations, combat contact, death).~~ ✅ Complete
+4. **Phase 5:** Whip and revolver weapon mechanics.
 5. **Phase 6:** Coins and exit portal triggers.
 6. **Phase 7:** On-screen controls, HUD, and pause menu overlays.

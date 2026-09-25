@@ -25,6 +25,9 @@ public final class MineLevel {
     /// Collision system handling static ground/walls/platforms.
     public let collision: LevelCollision
     
+    /// Active snake enemies in the level.
+    public private(set) var snakes: [SnakeEnemy] = []
+    
     // MARK: - Initialization
     
     public init() {
@@ -34,9 +37,27 @@ public final class MineLevel {
         
         buildBackground()
         buildLevelGeometryAndVisuals()
+        spawnSnakes()
         
         levelNode.addChild(collision.collisionNode)
         levelNode.addChild(collision.boundaryNode)
+    }
+    
+    // MARK: - Enemy Spawning
+    
+    private func spawnSnakes() {
+        // Place 3 test snakes at reachable ground locations
+        let spawnPoints: [CGPoint] = [
+            CGPoint(x: 380.0, y: 150.0),  // 1. Starting corridor
+            CGPoint(x: 1180.0, y: 190.0), // 2. Lower cave section
+            CGPoint(x: 1900.0, y: 170.0)  // 3. Open cave section
+        ]
+        
+        for pos in spawnPoints {
+            let snake = SnakeEnemy(spawnPosition: pos)
+            snakes.append(snake)
+            levelNode.addChild(snake)
+        }
     }
     
     // MARK: - Background & Atmosphere

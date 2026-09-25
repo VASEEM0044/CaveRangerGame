@@ -252,6 +252,41 @@ public final class Player: SKSpriteNode, PlayerEntity {
         activeAnimationKey = animKey
     }
     
+    // MARK: - Health & Damage
+    
+    /// Whether the player is currently in temporary post-hit invulnerability.
+    public private(set) var isInvulnerable: Bool = false
+    
+    /// Applies damage to the player, triggering hurt response and invulnerability flash.
+    public func takeDamage(amount: Int) {
+        guard isAlive && !isInvulnerable else { return }
+        
+        currentHealth = max(0, currentHealth - amount)
+        isInvulnerable = true
+        
+        // Slight knockback velocity impulse
+        let knockbackDir: CGFloat = facingDirection == .right ? -1.0 : 1.0
+        velocityX = knockbackDir * 160.0
+        velocityY = 180.0
+        isGrounded = false
+        
+        // Play hurt animation
+        setAnimation(.hurt)
+        
+        // Flash invulnerability action (1.0 second duration)
+        let fadeOut = SKAction.fadeAlpha(to: 0.3, duration: 0.1)
+        let fadeIn = SKAction.fadeAlpha(to: 1.0, duration: 0.1)
+        let pulse = SKAction.sequence([fadeOut, fadeIn])
+        let flashLoop = SKAction.repeat(pulse, count: 5)
+        
+        let resetInvuln = SKAction.run { [weak self] in
+            self?.isInvulnerable = false
+            self?.alpha = 1.0
+        }
+        
+        self.run(SKAction.sequence([flashLoop, resetInvuln]), withKey: "player_hurt_flash")
+    }
+    
     // MARK: - Ground Contact
     
     /// Called by GameScene when the player lands on ground.

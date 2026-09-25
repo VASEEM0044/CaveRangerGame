@@ -111,6 +111,11 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
             jumpRequested: playerController.jumpRequested
         )
         
+        // Update all active snake enemies in the level
+        for snake in mineLevel.snakes {
+            snake.update(deltaTime: deltaTime, currentTime: currentTime, player: player)
+        }
+        
         // Safety check for level boundaries & death pit fall
         checkLevelBoundaries()
         
@@ -149,6 +154,14 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         if bodyA.categoryBitMask == PhysicsCategory.player.rawValue &&
            bodyB.categoryBitMask == PhysicsCategory.ground.rawValue {
             handlePlayerGroundContact(playerBody: bodyA, groundBody: bodyB, contact: contact)
+        }
+        
+        // Player ↔ Enemy contact
+        if bodyA.categoryBitMask == PhysicsCategory.player.rawValue &&
+           bodyB.categoryBitMask == PhysicsCategory.enemy.rawValue {
+            if let snake = bodyB.node as? SnakeEnemy, snake.isAlive {
+                player.takeDamage(amount: snake.damage)
+            }
         }
     }
     
