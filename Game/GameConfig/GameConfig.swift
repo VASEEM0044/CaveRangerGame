@@ -56,6 +56,21 @@ public enum GameConfig {
         /// Render scale multiplier applied to the 128×128 sprite frame for on-screen display.
         /// A value of 0.5 renders the character at roughly 64×64 points.
         public static let renderScale: CGFloat = 0.5
+        
+        /// Coyote time window in seconds allowing jumps shortly after walking off a platform.
+        public static let coyoteTime: TimeInterval = 0.10
+        
+        /// Jump buffer window in seconds executing jump upon landing if pressed early.
+        public static let jumpBufferTime: TimeInterval = 0.10
+    }
+    
+    // MARK: - Camera Configuration
+    public enum Camera {
+        /// Damping factor for smooth following.
+        public static let smoothFactor: CGFloat = 0.12
+        
+        /// Default shake intensity in points.
+        public static let defaultShakeIntensity: CGFloat = 3.0
     }
     
     // MARK: - Weapons Configuration

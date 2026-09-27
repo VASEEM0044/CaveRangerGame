@@ -60,6 +60,10 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         setupHUD()
         
         gameStateManager.delegate = self
+        
+        // Smooth level start fade-in
+        self.alpha = 0.0
+        self.run(SKAction.fadeIn(withDuration: 0.25))
     }
     
     // MARK: - Scene Initialization
@@ -192,6 +196,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         if playerController.fireRequested {
             if let bullet = player.fireRevolver(parentScene: self) {
                 activeBullets.append(bullet)
+                gameCamera.shake(intensity: 2.0, duration: 0.06)
             }
         }
         
@@ -260,6 +265,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
            bodyB.categoryBitMask == PhysicsCategory.enemy.rawValue {
             if let snake = bodyB.node as? SnakeEnemy, snake.isAlive {
                 player.takeDamage(amount: snake.damage)
+                gameCamera.shake(intensity: 3.5, duration: 0.10)
             }
         }
         
@@ -275,6 +281,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         if bodyA.categoryBitMask == PhysicsCategory.player.rawValue &&
            bodyB.categoryBitMask == PhysicsCategory.exit.rawValue {
             mineLevel.mineExit.triggerCompletion(player: player)
+            gameCamera.shake(intensity: 2.0, duration: 0.12)
         }
         
         // Bullet ↔ Enemy contact
@@ -283,6 +290,7 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
             if let enemy = bodyA.node as? EnemyEntity, let bullet = bodyB.node as? Bullet {
                 enemy.takeDamage(amount: bullet.damage)
                 bullet.destroySelf(showImpact: true)
+                gameCamera.shake(intensity: 1.5, duration: 0.05)
             }
         }
         

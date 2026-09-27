@@ -241,8 +241,16 @@ public final class SnakeEnemy: SKSpriteNode, EnemyEntity {
         let dir: CGFloat = (player.position.x - self.position.x) > 0 ? 1.0 : -1.0
         updateFacing(direction: dir)
         
-        // Apply damage to player
-        player.takeDamage(amount: damage)
+        // Short readable telegraph (0.12s) before dealing damage, giving responsive feel
+        let telegraphWait = SKAction.wait(forDuration: 0.12)
+        let dealDamage = SKAction.run { [weak self, weak player] in
+            guard let self = self, let player = player, self.isAlive && self.currentState == .attack else { return }
+            let currentDist = hypot(player.position.x - self.position.x, player.position.y - self.position.y)
+            if currentDist <= self.attackRange + 15.0 {
+                player.takeDamage(amount: self.damage)
+            }
+        }
+        self.run(SKAction.sequence([telegraphWait, dealDamage]), withKey: "snake_damage_action")
     }
     
     // MARK: - State Machine & Animation

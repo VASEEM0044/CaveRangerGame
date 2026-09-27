@@ -65,6 +65,26 @@ public class GameCamera: SKCameraNode {
         return CGPoint(x: clampedX, y: clampedY)
     }
     
+    /// Triggers a brief, subtle retro screen shake for impact feedback.
+    public func shake(intensity: CGFloat = GameConfig.Camera.defaultShakeIntensity, duration: TimeInterval = 0.08) {
+        removeAction(forKey: "camera_shake")
+        
+        let numberOfShakes = 3
+        var actions: [SKAction] = []
+        let singleDuration = duration / Double(numberOfShakes * 2)
+        
+        for _ in 0..<numberOfShakes {
+            let dx = CGFloat.random(in: -intensity...intensity)
+            let dy = CGFloat.random(in: -intensity...intensity)
+            let move = SKAction.moveBy(x: dx, y: dy, duration: singleDuration)
+            let returnBack = move.reversed()
+            actions.append(move)
+            actions.append(returnBack)
+        }
+        
+        run(SKAction.sequence(actions), withKey: "camera_shake")
+    }
+    
     /// Configures the camera zoom factor (1.0 = standard 1:1 scale, 2.0 = 2x zoomed in).
     public func setZoom(_ zoom: CGFloat) {
         guard zoom > 0 else { return }

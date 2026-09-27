@@ -45,6 +45,12 @@ public final class Player: SKSpriteNode, PlayerEntity {
     /// Whether the player is currently touching a ground surface.
     public var isGrounded: Bool = false
     
+    /// Remaining coyote time window in seconds allowing jumps after walking off an edge.
+    private var coyoteTimer: TimeInterval = 0.0
+    
+    /// Remaining jump buffer window in seconds executing jump upon landing.
+    private var jumpBufferTimer: TimeInterval = 0.0
+    
     /// The current animation state driving sprite playback.
     public private(set) var currentAnimationState: PlayerAnimationState = .idle
     
@@ -224,10 +230,30 @@ public final class Player: SKSpriteNode, PlayerEntity {
     // MARK: - Gravity & Jump
     
     private func applyGravityAndJump(jumpRequested: Bool, dt: CGFloat) {
-        // Jump only when grounded and jump is requested
-        if jumpRequested && isGrounded {
+        let deltaTime = TimeInterval(dt)
+        
+        // 1. Update Coyote Timer
+        if isGrounded {
+            coyoteTimer = GameConfig.Player.coyoteTime
+        } else if coyoteTimer > 0 {
+            coyoteTimer -= deltaTime
+        }
+        
+        // 2. Update Jump Buffer Timer
+        if jumpRequested {
+            jumpBufferTimer = GameConfig.Player.jumpBufferTime
+        } else if jumpBufferTimer > 0 {
+            jumpBufferTimer -= deltaTime
+        }
+        
+        // 3. Execute Jump if buffered input is available and coyote time or grounded allows it
+        let canJump = isGrounded || coyoteTimer > 0.001
+        if jumpBufferTimer > 0.001 && canJump {
             velocityY = jumpForce
             isGrounded = false
+            coyoteTimer = 0.0
+            jumpBufferTimer = 0.0
+            
             AudioManager.shared.playSFX(.playerJump)
             if let parentNode = self.parent {
                 let feetPos = CGPoint(x: position.x, y: position.y - size.height * 0.35)

@@ -302,13 +302,29 @@ public final class GameHUD: SKNode, UIOverlay {
             isNewBestCoins: isNewBestCoins,
             isNewBestTime: isNewBestTime
         )
+        levelCompleteOverlay.alpha = 0.0
+        levelCompleteOverlay.setScale(0.92)
         levelCompleteOverlay.isHidden = false
+        
+        let fadeIn = SKAction.fadeIn(withDuration: 0.15)
+        let scaleUp = SKAction.scale(to: 1.0, duration: 0.15)
+        scaleUp.timingMode = .easeOut
+        levelCompleteOverlay.run(SKAction.group([fadeIn, scaleUp]))
+        
         pauseOverlay.isHidden = true
         gameOverOverlay.isHidden = true
     }
     
     public func showGameOverOverlay() {
+        gameOverOverlay.alpha = 0.0
+        gameOverOverlay.setScale(0.92)
         gameOverOverlay.isHidden = false
+        
+        let fadeIn = SKAction.fadeIn(withDuration: 0.15)
+        let scaleUp = SKAction.scale(to: 1.0, duration: 0.15)
+        scaleUp.timingMode = .easeOut
+        gameOverOverlay.run(SKAction.group([fadeIn, scaleUp]))
+        
         pauseOverlay.isHidden = true
         levelCompleteOverlay.isHidden = true
     }
