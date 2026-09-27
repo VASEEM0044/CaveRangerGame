@@ -73,20 +73,22 @@ public struct SpriteSheet: Sendable {
             }
             
             // Normalized unit width and height (SpriteKit unit space [0.0 ... 1.0])
-            let unitWidth = frameWidth / sheetSize.width
-            let unitHeight = frameHeight / sheetSize.height
+            let safeUnitW = min(1.0, max(0.001, frameWidth / sheetSize.width))
+            let safeUnitH = min(1.0, max(0.001, frameHeight / sheetSize.height))
             
             // SpriteKit texture coordinates place origin (0, 0) at the BOTTOM-LEFT.
             // Standard 2D sprite sheets index row 0 at the TOP.
-            // We compute unitX and unitY accordingly:
             let unitX = (CGFloat(column) * frameWidth) / sheetSize.width
             let unitY = 1.0 - ((CGFloat(row + 1) * frameHeight) / sheetSize.height)
             
+            let safeUnitX = max(0.0, min(1.0 - safeUnitW, unitX))
+            let safeUnitY = max(0.0, min(1.0 - safeUnitH, unitY))
+            
             let rect = CGRect(
-                x: max(0.0, min(1.0, unitX)),
-                y: max(0.0, min(1.0, unitY)),
-                width: min(1.0, unitWidth),
-                height: min(1.0, unitHeight)
+                x: safeUnitX,
+                y: safeUnitY,
+                width: safeUnitW,
+                height: safeUnitH
             )
             
             let subTexture = SKTexture(rect: rect, in: baseTexture)

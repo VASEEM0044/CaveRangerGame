@@ -21,28 +21,46 @@ public final class TextureCache: @unchecked Sendable {
             return cached
         }
         
-        // 1. Try standard SKTexture(imageNamed:)
-        var texture = SKTexture(imageNamed: imageName)
+        CrashLogger.shared.logSync("TextureCache requesting: \(imageName)")
         
-        // 2. If SKTexture returned an empty/unbacked texture, search Bundle resources
-        if texture.size().width <= 0 || texture.size().height <= 0 {
-            let base = (imageName as NSString).deletingPathExtension
-            let ext = (imageName as NSString).pathExtension.isEmpty ? "png" : (imageName as NSString).pathExtension
-            
-            var foundPath: String? = nil
-            if let path = Bundle.main.path(forResource: base, ofType: ext, inDirectory: "Assets") {
-                foundPath = path
-            } else if let path = Bundle.main.path(forResource: base, ofType: ext) {
-                foundPath = path
-            } else if let path = Bundle.main.path(forResource: imageName, ofType: nil, inDirectory: "Assets") {
-                foundPath = path
-            } else if let path = Bundle.main.path(forResource: imageName, ofType: nil) {
-                foundPath = path
+        let base = (imageName as NSString).deletingPathExtension
+        let ext = (imageName as NSString).pathExtension.isEmpty ? "png" : (imageName as NSString).pathExtension
+        
+        var foundImage: UIImage? = nil
+        
+        // 1. Check direct file path in Assets directory
+        if let path = Bundle.main.path(forResource: base, ofType: ext, inDirectory: "Assets") {
+            foundImage = UIImage(contentsOfFile: path)
+        }
+        // 2. Check direct file path at bundle root
+        if foundImage == nil, let path = Bundle.main.path(forResource: base, ofType: ext) {
+            foundImage = UIImage(contentsOfFile: path)
+        }
+        // 3. Check with exact filename in Assets
+        if foundImage == nil, let path = Bundle.main.path(forResource: imageName, ofType: nil, inDirectory: "Assets") {
+            foundImage = UIImage(contentsOfFile: path)
+        }
+        // 4. Check with exact filename at root
+        if foundImage == nil, let path = Bundle.main.path(forResource: imageName, ofType: nil) {
+            foundImage = UIImage(contentsOfFile: path)
+        }
+        // 5. Try UIImage(named:) from asset catalog
+        if foundImage == nil {
+            foundImage = UIImage(named: imageName) ?? UIImage(named: base)
+        }
+        
+        let texture: SKTexture
+        if let image = foundImage {
+            CrashLogger.shared.logSync("Successfully loaded UIImage for \(imageName), dimensions: \(image.size.width)x\(image.size.height)")
+            texture = SKTexture(image: image)
+        } else {
+            CrashLogger.shared.logSync("WARNING: Asset \(imageName) not found in bundle, creating safe 64x64 placeholder")
+            let renderer = UIGraphicsImageRenderer(size: CGSize(width: 64, height: 64))
+            let fallbackImage = renderer.image { ctx in
+                UIColor.darkGray.setFill()
+                ctx.fill(CGRect(x: 0, y: 0, width: 64, height: 64))
             }
-            
-            if let path = foundPath, let image = UIImage(contentsOfFile: path) {
-                texture = SKTexture(image: image)
-            }
+            texture = SKTexture(image: fallbackImage)
         }
         
         texture.filteringMode = .nearest

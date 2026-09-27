@@ -37,18 +37,25 @@ public final class MineLevel {
     // MARK: - Initialization
     
     public init() {
+        CrashLogger.shared.logSync("MineLevel init started")
         levelNode = SKNode()
         levelNode.name = "mine_level"
         collision = LevelCollision()
         
+        CrashLogger.shared.logSync("MineLevel building background...")
         buildBackground()
+        CrashLogger.shared.logSync("MineLevel building geometry and visuals...")
         buildLevelGeometryAndVisuals()
+        CrashLogger.shared.logSync("MineLevel spawning snakes...")
         spawnSnakes()
+        CrashLogger.shared.logSync("MineLevel spawning coins...")
         spawnCoins()
+        CrashLogger.shared.logSync("MineLevel spawning mine exit...")
         spawnMineExit()
         
         levelNode.addChild(collision.collisionNode)
         levelNode.addChild(collision.boundaryNode)
+        CrashLogger.shared.logSync("MineLevel init finished successfully")
     }
     
     // MARK: - Spawning Methods
