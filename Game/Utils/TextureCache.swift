@@ -21,7 +21,30 @@ public final class TextureCache: @unchecked Sendable {
             return cached
         }
         
-        let texture = SKTexture(imageNamed: imageName)
+        // 1. Try standard SKTexture(imageNamed:)
+        var texture = SKTexture(imageNamed: imageName)
+        
+        // 2. If SKTexture returned an empty/unbacked texture, search Bundle resources
+        if texture.size().width <= 0 || texture.size().height <= 0 {
+            let base = (imageName as NSString).deletingPathExtension
+            let ext = (imageName as NSString).pathExtension.isEmpty ? "png" : (imageName as NSString).pathExtension
+            
+            var foundPath: String? = nil
+            if let path = Bundle.main.path(forResource: base, ofType: ext, inDirectory: "Assets") {
+                foundPath = path
+            } else if let path = Bundle.main.path(forResource: base, ofType: ext) {
+                foundPath = path
+            } else if let path = Bundle.main.path(forResource: imageName, ofType: nil, inDirectory: "Assets") {
+                foundPath = path
+            } else if let path = Bundle.main.path(forResource: imageName, ofType: nil) {
+                foundPath = path
+            }
+            
+            if let path = foundPath, let image = UIImage(contentsOfFile: path) {
+                texture = SKTexture(image: image)
+            }
+        }
+        
         texture.filteringMode = .nearest
         baseTextures[imageName] = texture
         return texture

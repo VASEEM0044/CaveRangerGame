@@ -22,8 +22,8 @@ public class GameViewController: UIViewController {
         skView.showsNodeCount = GameConfig.Debug.showNodeCount
         skView.showsPhysics = GameConfig.Debug.showPhysicsOutlines
         
-        // Present initial GameScene
-        let scene = GameScene()
+        // Present initial GameScene with fixed logical 16:9 canvas
+        let scene = GameScene(size: GameConfig.Display.logicalSize)
         scene.scaleMode = .aspectFit
         skView.presentScene(scene)
     }

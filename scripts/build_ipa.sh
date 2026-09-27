@@ -51,6 +51,41 @@ echo "==> Step 2/3: Packaging ${PROJECT_NAME}.app into IPA Payload structure..."
 mkdir -p "${PAYLOAD_DIR}"
 cp -R "${APP_BUNDLE}" "${PAYLOAD_DIR}/"
 
+TARGET_APP=$(find "${PAYLOAD_DIR}" -name "*.app" -maxdepth 1 2>/dev/null | head -n 1)
+
+echo "==> Embedding assets and AppIcon into ${TARGET_APP}..."
+# 1. Copy raw PNG assets to app root and Assets/ subfolder
+cp Assets/*.png "${TARGET_APP}/" 2>/dev/null || true
+mkdir -p "${TARGET_APP}/Assets"
+cp Assets/*.png "${TARGET_APP}/Assets/" 2>/dev/null || true
+
+# 2. Copy audio assets to root, Audio/, and Assets/Audio/
+mkdir -p "${TARGET_APP}/Audio"
+mkdir -p "${TARGET_APP}/Assets/Audio"
+cp Assets/Audio/*.wav "${TARGET_APP}/" 2>/dev/null || true
+cp Assets/Audio/*.wav "${TARGET_APP}/Audio/" 2>/dev/null || true
+cp Assets/Audio/*.wav "${TARGET_APP}/Assets/Audio/" 2>/dev/null || true
+
+# 3. Create standalone AppIcon files in app root for SpringBoard & TrollStore
+if [ -f "Assets/icon.png" ]; then
+  cp "Assets/icon.png" "${TARGET_APP}/icon.png"
+  cp "Assets/icon.png" "${TARGET_APP}/AppIcon.png"
+  cp "Assets/icon.png" "${TARGET_APP}/AppIcon60x60@2x.png"
+  cp "Assets/icon.png" "${TARGET_APP}/AppIcon60x60@3x.png"
+  cp "Assets/icon.png" "${TARGET_APP}/AppIcon76x76@2x~ipad.png"
+fi
+
+# 4. Compile Asset Catalog with actool to generate Assets.car
+if command -v actool >/dev/null 2>&1; then
+  echo "==> Compiling Asset Catalog with actool..."
+  actool "Assets/AppIcon.appiconset" \
+    --compile "${TARGET_APP}" \
+    --platform iphoneos \
+    --minimum-deployment-target 16.0 \
+    --app-icon AppIcon \
+    --output-partial-info-plist "${BUILD_DIR}/partial_info.plist" 2>/dev/null || true
+fi
+
 # 4. Create standard IPA zip archive
 echo "==> Step 3/3: Creating ${IPA_NAME}..."
 cd "${BUILD_DIR}"
