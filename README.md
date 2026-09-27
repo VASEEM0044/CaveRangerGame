@@ -374,31 +374,72 @@ Pre-configured masks:
 
 ---
 
-## Building and Continuous Integration (CI)
+## iOS Build & Release
 
-To compile and verify the project using command-line tools on macOS or CI runners (GitHub Actions):
+### Project Identity
+- **Bundle Identifier:** `com.vntm.caverangerx`
+- **Display Name:** `Cave Ranger`
+- **Marketing Version:** `1.0.0`
+- **Build Number:** `1`
+- **Target OS:** iOS 16.0+ (iPhone & iPad)
+- **Supported Orientations:** Landscape (Left & Right)
+- **App Icon:** `Assets/icon.png` (1024×1024) configured via `AppIcon.appiconset`
 
+### Environment Requirements
+- macOS 14+ (Sonoma or later)
+- Xcode 15.0+ (with iOS 16.0+ SDK)
+- Swift 5.0
+
+### Local macOS Build Instructions
 ```bash
-# Build the project
-xcodebuild clean build \
+# Clone the repository
+git clone https://github.com/vntm/caveranger.git
+cd caveranger
+
+# Build Release binary for iOS Simulator
+xcodebuild build \
   -project CaveRangerGame.xcodeproj \
   -scheme CaveRangerGame \
-  -destination 'generic/platform=iOS' \
-  -configuration Debug
+  -destination "generic/platform=iOS Simulator" \
+  -configuration Release
+
+# Archive for physical device (requires Apple Developer Team ID / signing credentials)
+xcodebuild clean archive \
+  -project CaveRangerGame.xcodeproj \
+  -scheme CaveRangerGame \
+  -configuration Release \
+  -archivePath build/CaveRanger.xcarchive
 ```
+
+### GitHub Actions CI Workflow
+The repository includes a GitHub Actions workflow (`.github/workflows/ios-build.yml`) running on `macos-14` runners:
+1. Checks out repository.
+2. Selects Xcode 15.4.
+3. Builds the project in **Release** configuration.
+4. Generates an unsigned `.xcarchive` artifact.
+
+> [!NOTE]
+> **Physical Device Installation:** Physical iPhone installations require valid Apple Developer Code Signing certificates and Provisioning Profiles configured in Xcode. Unsigned builds validate compilation and packaging on CI.
 
 ---
 
-## Next Development Steps
+## Device QA Checklist
+See [docs/IOS_TEST_CHECKLIST.md](docs/IOS_TEST_CHECKLIST.md) for full physical device test procedures.
 
-1. ~~**Phase 2:** Player movement, platform physics, and jump curves.~~ ✅ Complete
-2. ~~**Phase 3:** Tilemap rendering and cave level layout using `mine_cave_tileset.png`.~~ ✅ Complete
-3. ~~**Phase 4:** Snake enemy system (AI, animations, combat contact, death).~~ ✅ Complete
-4. ~~**Phase 5:** Whip combat system (animations, J/X input, melee hitbox, snake damage).~~ ✅ Complete
-5. ~~**Phase 6:** Revolver & bullet combat system (fire, reload, ammo, muzzle flash, projectile contacts).~~ ✅ Complete
-6. ~~**Phase 7:** Coin & collectible system (animations, pickup sequence, level distribution, level stats).~~ ✅ Complete
-7. ~~**Phase 8:** Mine exit portal & level completion.~~ ✅ Complete
-8. ~~**Phase 9:** iPhone/iPad on-screen touch controls.~~ ✅ Complete
-9. ~~**Phase 10:** HUD overlay (health, ammo, coin counters) & pause menu.~~ ✅ Complete
-10. ~~**Phase 11:** Audio SFX system & retro visual effects.~~ ✅ Complete
-11. **Phase 12:** Level progression, high scores, and persistent save data.
+---
+
+## Completed Phases
+1. **Phase 1: Foundation Architecture** ✅ Complete
+2. **Phase 2: Player Movement & Animation** ✅ Complete
+3. **Phase 3: Mine Environment & Collision** ✅ Complete
+4. **Phase 4: Snake Enemy AI System** ✅ Complete
+5. **Phase 5: Whip Combat System** ✅ Complete
+6. **Phase 6: Revolver & Bullet Combat System** ✅ Complete
+7. **Phase 7: Coin & Collectible System** ✅ Complete
+8. **Phase 8: Mine Exit & Level Completion** ✅ Complete
+9. **Phase 9: iPhone / iPad Touch Controls** ✅ Complete
+10. **Phase 10: HUD Overlay & Modal Menus** ✅ Complete
+11. **Phase 11: Audio SFX & Retro VFX System** ✅ Complete
+12. **Phase 12: Persistent Save System & Progression** ✅ Complete
+13. **Phase 13: Final Polish & QA** ✅ Complete
+14. **Phase 14: iOS Build & Release Preparation** ✅ Complete

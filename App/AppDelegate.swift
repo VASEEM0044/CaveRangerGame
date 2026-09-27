@@ -16,4 +16,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = window
         return true
     }
+    
+    func applicationWillResignActive(_ application: UIApplication) {
+        // Pause active gameplay when the application leaves foreground or is interrupted
+        guard let gameViewController = window?.rootViewController as? GameViewController,
+              let skView = gameViewController.view as? SKView,
+              let scene = skView.scene as? GameScene else { return }
+        
+        if scene.gameStateManager.currentState == .playing {
+            scene.gameStateManager.transition(to: .paused)
+        }
+    }
 }
