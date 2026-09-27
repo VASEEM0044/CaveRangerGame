@@ -50,20 +50,30 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
     // MARK: - Scene Lifecycle
     
     public override func didMove(to view: SKView) {
+        CrashLogger.shared.logSync("GameScene didMove started")
         setupSceneProperties()
+        CrashLogger.shared.logSync("GameScene setupSceneProperties done")
         setupPhysicsWorld()
+        CrashLogger.shared.logSync("GameScene setupPhysicsWorld done")
         setupPlayerController()
+        CrashLogger.shared.logSync("GameScene setupPlayerController done")
         setupLevel()
+        CrashLogger.shared.logSync("GameScene setupLevel done")
         setupCamera()
+        CrashLogger.shared.logSync("GameScene setupCamera done")
         setupPlayer()
+        CrashLogger.shared.logSync("GameScene setupPlayer done")
         setupTouchControls()
+        CrashLogger.shared.logSync("GameScene setupTouchControls done")
         setupHUD()
+        CrashLogger.shared.logSync("GameScene setupHUD done")
         
         gameStateManager.delegate = self
         
         // Smooth level start fade-in
         self.alpha = 0.0
         self.run(SKAction.fadeIn(withDuration: 0.25))
+        CrashLogger.shared.logSync("GameScene initialization completed successfully")
     }
     
     // MARK: - Scene Initialization

@@ -46,6 +46,7 @@
 		10000037 /* VFXManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000038 /* VFXManager.swift */; };
 		10000038 /* SaveData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000039 /* SaveData.swift */; };
 		10000039 /* SaveManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000040 /* SaveManager.swift */; };
+		10000040 /* CrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000041 /* CrashLogger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -90,6 +91,7 @@
 		20000038 /* VFXManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VFXManager.swift; sourceTree = "<group>"; };
 		20000039 /* SaveData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveData.swift; sourceTree = "<group>"; };
 		20000040 /* SaveManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveManager.swift; sourceTree = "<group>"; };
+		20000041 /* CrashLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashLogger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,6 +201,7 @@
 			children = (
 				20000009 /* SpriteSheet.swift */,
 				20000010 /* TextureCache.swift */,
+				20000041 /* CrashLogger.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -400,6 +403,7 @@
 				10000037 /* VFXManager.swift in Sources */,
 				10000038 /* SaveData.swift in Sources */,
 				10000039 /* SaveManager.swift in Sources */,
+				10000040 /* CrashLogger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

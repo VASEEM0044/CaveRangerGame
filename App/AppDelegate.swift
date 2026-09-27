@@ -10,11 +10,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        CrashLogger.shared.logSync("AppDelegate didFinishLaunchingWithOptions triggered")
         // Pure programmatic application setup without Storyboards
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = GameViewController()
         window.makeKeyAndVisible()
         self.window = window
+        CrashLogger.shared.logSync("Window made key and visible with GameViewController")
         return true
     }
     

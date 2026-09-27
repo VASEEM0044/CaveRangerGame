@@ -65,6 +65,10 @@
             <string>AppIcon</string>
         </dict>
     </dict>
+    <key>UIFileSharingEnabled</key>
+    <true/>
+    <key>LSSupportsOpeningDocumentsInPlace</key>
+    <true/>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
 </dict>
