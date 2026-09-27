@@ -47,6 +47,7 @@ public final class CrashLogger: @unchecked Sendable {
                 if let fileHandle = try? FileHandle(forWritingTo: url) {
                     fileHandle.seekToEndOfFile()
                     fileHandle.write(data)
+                    try? fileHandle.synchronize()
                     fileHandle.closeFile()
                 }
             } else {

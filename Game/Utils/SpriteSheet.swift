@@ -64,37 +64,13 @@ public struct SpriteSheet: Sendable {
     
     /// Extracts a single frame texture specified by row and column (0-indexed, where row 0 is the top row).
     public func texture(row: Int, column: Int) -> SKTexture {
-        let cacheKey = "\(imageName)_r\(row)_c\(column)_w\(Int(frameWidth))_h\(Int(frameHeight))"
-        
-        return TextureCache.shared.subTexture(forKey: cacheKey) {
-            let sheetSize = textureSize
-            guard sheetSize.width > 0, sheetSize.height > 0, frameWidth > 0, frameHeight > 0 else {
-                return baseTexture
-            }
-            
-            // Normalized unit width and height (SpriteKit unit space [0.0 ... 1.0])
-            let safeUnitW = min(1.0, max(0.001, frameWidth / sheetSize.width))
-            let safeUnitH = min(1.0, max(0.001, frameHeight / sheetSize.height))
-            
-            // SpriteKit texture coordinates place origin (0, 0) at the BOTTOM-LEFT.
-            // Standard 2D sprite sheets index row 0 at the TOP.
-            let unitX = (CGFloat(column) * frameWidth) / sheetSize.width
-            let unitY = 1.0 - ((CGFloat(row + 1) * frameHeight) / sheetSize.height)
-            
-            let safeUnitX = max(0.0, min(1.0 - safeUnitW, unitX))
-            let safeUnitY = max(0.0, min(1.0 - safeUnitH, unitY))
-            
-            let rect = CGRect(
-                x: safeUnitX,
-                y: safeUnitY,
-                width: safeUnitW,
-                height: safeUnitH
-            )
-            
-            let subTexture = SKTexture(rect: rect, in: baseTexture)
-            subTexture.filteringMode = .nearest
-            return subTexture
-        }
+        let pixelRect = CGRect(
+            x: CGFloat(column) * frameWidth,
+            y: CGFloat(row) * frameHeight,
+            width: frameWidth,
+            height: frameHeight
+        )
+        return TextureCache.shared.croppedTexture(from: imageName, pixelRect: pixelRect)
     }
     
     /// Extracts a single frame texture specified by a linear frame index

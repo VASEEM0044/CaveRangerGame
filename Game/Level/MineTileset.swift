@@ -72,19 +72,7 @@ public enum MineTileset {
     /// Extracts a sub-region texture from the tileset using pixel coordinates.
     /// This enables sampling small rock/wood textures from the detailed entrance artwork.
     public static func subRegionTexture(pixelRect: CGRect) -> SKTexture {
-        let unitRect = CGRect(
-            x: pixelRect.origin.x / sheetWidth,
-            y: 1.0 - (pixelRect.origin.y + pixelRect.size.height) / sheetHeight,
-            width: pixelRect.size.width / sheetWidth,
-            height: pixelRect.size.height / sheetHeight
-        )
-        let cacheKey = "mine_sub_\(Int(pixelRect.origin.x))_\(Int(pixelRect.origin.y))_\(Int(pixelRect.width))_\(Int(pixelRect.height))"
-        return TextureCache.shared.subTexture(forKey: cacheKey) {
-            let base = TextureCache.shared.baseTexture(named: fileName)
-            let tex = SKTexture(rect: unitRect, in: base)
-            tex.filteringMode = .nearest
-            return tex
-        }
+        return TextureCache.shared.croppedTexture(from: fileName, pixelRect: pixelRect)
     }
     
     // MARK: - Commonly Used Texture Regions
