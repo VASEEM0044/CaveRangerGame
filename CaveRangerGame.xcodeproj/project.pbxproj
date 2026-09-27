@@ -42,6 +42,8 @@
 		10000033 /* MineExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000034 /* MineExit.swift */; };
 		10000034 /* TouchControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000035 /* TouchControls.swift */; };
 		10000035 /* GameHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000036 /* GameHUD.swift */; };
+		10000036 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000037 /* AudioManager.swift */; };
+		10000037 /* VFXManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000038 /* VFXManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -82,6 +84,8 @@
 		20000034 /* MineExit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineExit.swift; sourceTree = "<group>"; };
 		20000035 /* TouchControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchControls.swift; sourceTree = "<group>"; };
 		20000036 /* GameHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameHUD.swift; sourceTree = "<group>"; };
+		20000037 /* AudioManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
+		20000038 /* VFXManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VFXManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +134,8 @@
 				40000014 /* Collectibles */,
 				40000015 /* Level */,
 				40000016 /* UI */,
+				40000017 /* Audio */,
+				40000018 /* VFX */,
 			);
 			path = Game;
 			sourceTree = "<group>";
@@ -258,6 +264,22 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
+		40000017 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				20000037 /* AudioManager.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		40000018 /* VFX */ = {
+			isa = PBXGroup;
+			children = (
+				20000038 /* VFXManager.swift */,
+			);
+			path = VFX;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -360,6 +382,8 @@
 				10000033 /* MineExit.swift in Sources */,
 				10000034 /* TouchControls.swift in Sources */,
 				10000035 /* GameHUD.swift in Sources */,
+				10000036 /* AudioManager.swift in Sources */,
+				10000037 /* VFXManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -463,10 +463,12 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         switch newState {
         case .playing:
             self.isPaused = false
+            AudioManager.shared.resumeAllSFX()
             touchControls?.setControlsActive(true)
             gameHUD?.hideAllOverlays()
         case .paused:
             self.isPaused = true
+            AudioManager.shared.pauseAllSFX()
             touchControls?.setControlsActive(false)
             gameHUD?.setPauseOverlay(visible: true)
         case .levelComplete:

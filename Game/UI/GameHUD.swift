@@ -174,22 +174,27 @@ public final class GameHUD: SKNode, UIOverlay {
     
     private func setupButtonActions() {
         pauseButton.onTapped = { [weak self] in
+            AudioManager.shared.playSFX(.uiPause)
             self?.onPausePressed?()
         }
         
         pauseOverlay.onResumeTapped = { [weak self] in
+            AudioManager.shared.playSFX(.uiClick)
             self?.onResumePressed?()
         }
         
         pauseOverlay.onRestartTapped = { [weak self] in
+            AudioManager.shared.playSFX(.uiClick)
             self?.onRestartPressed?()
         }
         
         levelCompleteOverlay.onContinueTapped = { [weak self] in
+            AudioManager.shared.playSFX(.uiClick)
             self?.onRestartPressed?()
         }
         
         gameOverOverlay.onRetryTapped = { [weak self] in
+            AudioManager.shared.playSFX(.uiClick)
             self?.onRestartPressed?()
         }
     }

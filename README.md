@@ -347,6 +347,33 @@ Pre-configured masks:
 
 ---
 
+## Phase 11: Audio System & Retro Visual Effects (VFX)
+
+### Centralized Audio System (`AudioManager.swift`)
+- **Sound Registry**: Exact 1-to-1 mapping of logical game events to the 16 `.wav` audio files in `Assets/Audio/`:
+  - **Player**: `player_jump.wav`, `player_land.wav`, `player_hurt.wav`
+  - **Whip Weapon**: `whip_attack.wav`, `whip_impact.wav`
+  - **Revolver Firearm**: `revolver_fire.wav`, `revolver_reload.wav`, `bullet_impact.wav`
+  - **Snake Enemy**: `snake_attack.wav`, `snake_hurt.wav`, `snake_death.wav`
+  - **Collectibles**: `coin_collect.wav`
+  - **Level Flow**: `exit_activate.wav`, `level_complete.wav`
+  - **UI / HUD**: `ui_click.wav`, `ui_pause.wav`
+- **Audio Pool & Concurrency Limiting**: Pre-warmed audio player pool supporting natural overlapping SFX (up to 3 simultaneous instances per sound effect) while preventing runaway memory consumption.
+- **Safety & Resiliency**: Missing-file safety prevents audio loading issues from crashing gameplay; ambient audio session configuration respects external audio playback.
+- **State Pause & Resume**: Audio automatically pauses on `.paused` and resumes seamlessly when returning to `.playing`.
+
+### Retro Pixel-Art VFX (`VFXManager.swift`)
+- **Lightweight Native Particle Bursts** (5–15 particles per event):
+  - **Jump & Land**: Pixelated dust puffs at character's feet.
+  - **Combat Impact**: Sharp radiant sparks on whip hit and bullet impact against walls or enemies.
+  - **Coin Sparkles**: Rising golden pixel sparkle burst upon pickup.
+  - **Exit Portal**: Rising cyan/purple energy wisps on portal activation.
+  - **Level Clear**: Festive multi-colored pixel confetti burst.
+  - **Hurt Flash**: Instant sprite color tint flash on player/enemy damage.
+- **Zero Memory Leakage**: All VFX nodes self-terminate and remove themselves from the node hierarchy via timed `SKAction` sequences.
+
+---
+
 ## Building and Continuous Integration (CI)
 
 To compile and verify the project using command-line tools on macOS or CI runners (GitHub Actions):
@@ -373,4 +400,5 @@ xcodebuild clean build \
 7. ~~**Phase 8:** Mine exit portal & level completion.~~ ✅ Complete
 8. ~~**Phase 9:** iPhone/iPad on-screen touch controls.~~ ✅ Complete
 9. ~~**Phase 10:** HUD overlay (health, ammo, coin counters) & pause menu.~~ ✅ Complete
-10. **Phase 11:** Audio, sound effects, particle effects, and final game polish.
+10. ~~**Phase 11:** Audio SFX system & retro visual effects.~~ ✅ Complete
+11. **Phase 12:** Level progression, high scores, and persistent save data.

@@ -235,6 +235,8 @@ public final class SnakeEnemy: SKSpriteNode, EnemyEntity {
         stateTimer = 0.6 // Attack duration
         attackCooldownTimer = 1.4 // Cooldown before next attack
         
+        AudioManager.shared.playSFX(.snakeAttack)
+        
         // Face player during attack
         let dir: CGFloat = (player.position.x - self.position.x) > 0 ? 1.0 : -1.0
         updateFacing(direction: dir)
@@ -293,6 +295,8 @@ public final class SnakeEnemy: SKSpriteNode, EnemyEntity {
         if health == 0 {
             die()
         } else {
+            AudioManager.shared.playSFX(.snakeHurt)
+            VFXManager.flashNode(self, color: .red, duration: 0.12)
             transitionTo(.hurt)
             stateTimer = 0.4
         }
@@ -302,6 +306,11 @@ public final class SnakeEnemy: SKSpriteNode, EnemyEntity {
         currentState = .dead
         physicsBody?.categoryBitMask = 0
         physicsBody?.collisionBitMask = 0
+        
+        AudioManager.shared.playSFX(.snakeDeath)
+        if let parentNode = self.parent {
+            VFXManager.createDustPuff(at: position, in: parentNode, particleCount: 8)
+        }
         
         setAnimation(.dead)
         

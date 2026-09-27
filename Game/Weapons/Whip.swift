@@ -72,6 +72,8 @@ public final class Whip: Weapon {
         currentFacing = facing
         damagedEnemiesInCurrentAttack.removeAll()
         
+        AudioManager.shared.playSFX(.whipAttack)
+        
         // Position relative to player's hand/chest
         let xOffset: CGFloat = facing == .right ? 22.0 : -22.0
         self.position = CGPoint(x: playerPosition.x + xOffset, y: playerPosition.y + 2.0)
@@ -146,6 +148,13 @@ public final class Whip: Weapon {
                 if !damagedEnemiesInCurrentAttack.contains(enemyId) {
                     damagedEnemiesInCurrentAttack.insert(enemyId)
                     enemy.takeDamage(amount: baseDamage)
+                    AudioManager.shared.playSFX(.whipImpact)
+                    VFXManager.createImpactBurst(
+                        at: enemyNode.position,
+                        in: scene,
+                        color: SKColor(red: 1.0, green: 0.85, blue: 0.30, alpha: 1.0),
+                        particleCount: 8
+                    )
                 }
             }
         }

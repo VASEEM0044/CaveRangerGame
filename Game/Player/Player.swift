@@ -228,6 +228,11 @@ public final class Player: SKSpriteNode, PlayerEntity {
         if jumpRequested && isGrounded {
             velocityY = jumpForce
             isGrounded = false
+            AudioManager.shared.playSFX(.playerJump)
+            if let parentNode = self.parent {
+                let feetPos = CGPoint(x: position.x, y: position.y - size.height * 0.35)
+                VFXManager.createDustPuff(at: feetPos, in: parentNode, particleCount: 5)
+            }
         }
         
         // Apply gravity every frame (manual simulation)
@@ -324,6 +329,9 @@ public final class Player: SKSpriteNode, PlayerEntity {
         currentHealth = max(0, currentHealth - amount)
         isInvulnerable = true
         
+        AudioManager.shared.playSFX(.playerHurt)
+        VFXManager.flashNode(self, color: .red, duration: 0.15)
+        
         // Slight knockback velocity impulse
         let knockbackDir: CGFloat = facingDirection == .right ? -1.0 : 1.0
         velocityX = knockbackDir * 160.0
@@ -353,8 +361,14 @@ public final class Player: SKSpriteNode, PlayerEntity {
     public func onGroundContact() {
         if !isGrounded {
             isGrounded = true
-            // Zero out downward velocity on landing
-            if velocityY < 0 {
+            
+            // Only play landing sound and dust when falling from air
+            if velocityY <= 0 {
+                AudioManager.shared.playSFX(.playerLand)
+                if let parentNode = self.parent {
+                    let feetPos = CGPoint(x: position.x, y: position.y - size.height * 0.35)
+                    VFXManager.createDustPuff(at: feetPos, in: parentNode, particleCount: 6)
+                }
                 velocityY = 0.0
             }
         }

@@ -96,6 +96,9 @@ public final class Bullet: SKSpriteNode {
     }
     
     private func spawnImpactEffect(in scene: SKScene, position: CGPoint) {
+        AudioManager.shared.playSFX(.bulletImpact)
+        VFXManager.createImpactBurst(at: position, in: scene, color: .white, particleCount: 6)
+        
         guard !Bullet.impactFrames.isEmpty else { return }
         
         let impactNode = SKSpriteNode(texture: Bullet.impactFrames.first, size: CGSize(width: 24, height: 24))

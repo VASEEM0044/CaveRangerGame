@@ -83,6 +83,11 @@ public final class MineExit: SKSpriteNode {
         self.physicsBody = nil // Remove sensor to prevent duplicate triggers
         self.removeAction(forKey: "exit_anim")
         
+        AudioManager.shared.playSFX(.exitActivate)
+        if let parentNode = self.parent {
+            VFXManager.createExitActivationBurst(at: position, in: parentNode, particleCount: 12)
+        }
+        
         if let handler = completionHandler {
             self.onCompletionHandler = handler
         }
@@ -94,8 +99,13 @@ public final class MineExit: SKSpriteNode {
         }
         let completionAnim = SKAction.animate(with: MineExitAnimations.completionFrames, timePerFrame: 0.10, resize: false, restore: false)
         let setCompleted = SKAction.run { [weak self] in
-            self?.currentState = .completed
-            self?.onCompletionHandler?()
+            guard let self = self else { return }
+            self.currentState = .completed
+            AudioManager.shared.playSFX(.levelComplete)
+            if let parentNode = self.parent {
+                VFXManager.createLevelCompleteBurst(at: self.position, in: parentNode, particleCount: 16)
+            }
+            self.onCompletionHandler?()
         }
         let finalAnim = SKAction.animate(with: MineExitAnimations.finalFrames, timePerFrame: 0.15, resize: false, restore: false)
         

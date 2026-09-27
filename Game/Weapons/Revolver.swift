@@ -109,6 +109,8 @@ public final class Revolver: Weapon {
         currentAmmo -= 1
         startCooldown()
         
+        AudioManager.shared.playSFX(.revolverFire)
+        
         // Update revolver sprite transforms
         updatePosition(playerPosition: playerPosition, facing: facing)
         
@@ -150,6 +152,8 @@ public final class Revolver: Weapon {
         
         isReloading = true
         reloadTimer = GameConfig.Weapons.revolverReloadTime
+        
+        AudioManager.shared.playSFX(.revolverReload)
         
         let reloadAnim = SKAction.animate(with: RevolverAnimations.reloadFrames, timePerFrame: 0.12, resize: false, restore: false)
         spriteNode.run(SKAction.repeatForever(reloadAnim), withKey: "revolver_reload")

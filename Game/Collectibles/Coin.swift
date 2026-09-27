@@ -72,6 +72,11 @@ public final class Coin: Collectible {
         guard !isCollected else { return }
         super.onCollect(by: player)
         
+        AudioManager.shared.playSFX(.coinCollect)
+        if let parentNode = self.parent {
+            VFXManager.createCoinSparkles(at: position, in: parentNode, particleCount: 8)
+        }
+        
         // Remove physics body immediately to prevent duplicate triggers
         self.physicsBody = nil
         self.removeAction(forKey: "coin_spin")
