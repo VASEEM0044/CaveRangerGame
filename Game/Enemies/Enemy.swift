@@ -11,7 +11,7 @@ open class Enemy: SKSpriteNode, EnemyEntity {
     public var maxHealth: Int = 3
     public var isAlive: Bool { health > 0 }
     
-    public init(texture: SKTexture?, color: SKColor, size: CGSize) {
+    public override init(texture: SKTexture?, color: SKColor, size: CGSize) {
         super.init(texture: texture, color: color, size: size)
     }
     

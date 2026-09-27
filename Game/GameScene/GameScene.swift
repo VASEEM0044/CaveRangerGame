@@ -261,7 +261,6 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         
         // Player ↔ Enemy contact
         if bodyA.categoryBitMask == PhysicsCategory.player.rawValue &&
-           bodyB.categoryBitMask == PhysicsCategory.ground.rawValue == false &&
            bodyB.categoryBitMask == PhysicsCategory.enemy.rawValue {
             if let snake = bodyB.node as? SnakeEnemy, snake.isAlive {
                 player.takeDamage(amount: snake.damage)

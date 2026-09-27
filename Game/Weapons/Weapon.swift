@@ -10,10 +10,10 @@ open class Weapon: SKNode, WeaponEntity {
     public var attackCooldown: TimeInterval { GameConfig.Weapons.whipCooldown }
     
     /// Tracks cooldown timer remaining before the next attack can occur.
-    public private(set) var cooldownTimer: TimeInterval = 0
+    public internal(set) var cooldownTimer: TimeInterval = 0
     
     /// Indicates whether the weapon is currently actively executing an attack swing.
-    public private(set) var isAttacking: Bool = false
+    public internal(set) var isAttacking: Bool = false
     
     public override init() {
         super.init()

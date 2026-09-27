@@ -117,8 +117,8 @@ public final class PlayerController {
     private func observeKeyboard(_ keyboard: GCKeyboard) {
         guard let input = keyboard.keyboardInput else { return }
         
-        input.keyChangedHandler = { [weak self] _, key, _, pressed in
-            self?.handleKeyChange(keyCode: key.keyCode, pressed: pressed)
+        input.keyChangedHandler = { [weak self] _, _, keyCode, pressed in
+            self?.handleKeyChange(keyCode: keyCode, pressed: pressed)
         }
     }
     

@@ -442,7 +442,7 @@ private final class HUDButton: SKNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func contains(_ point: CGPoint) -> Bool {
+    override func contains(_ point: CGPoint) -> Bool {
         let halfW = size.width / 2.0 + 6.0
         let halfH = size.height / 2.0 + 6.0
         return point.x >= position.x - halfW && point.x <= position.x + halfW &&

@@ -12,7 +12,7 @@ open class Collectible: SKSpriteNode, CollectibleEntity {
     /// Indicates whether this item has already been collected.
     public private(set) var isCollected: Bool = false
     
-    public init(texture: SKTexture?, color: SKColor, size: CGSize) {
+    public override init(texture: SKTexture?, color: SKColor, size: CGSize) {
         super.init(texture: texture, color: color, size: size)
     }
     

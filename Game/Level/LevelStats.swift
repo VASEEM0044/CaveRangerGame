@@ -2,7 +2,7 @@ import Foundation
 
 /// Lightweight current-session/current-level statistics tracking.
 /// Stores collected coin counts and total available coins without using persistent storage.
-public final class LevelStats: Sendable {
+public final class LevelStats: @unchecked Sendable {
     
     /// Total number of coins collected in the current level.
     public private(set) var coinsCollected: Int = 0
