@@ -111,13 +111,13 @@ public final class GameHUD: SKNode, UIOverlay {
         timerCard.addChild(timerLabel)
         
         // 4. Ammo Card (Top-Right)
-        ammoCard = SKShapeNode(rectOf: CGSize(width: 68.0, height: 18.0), cornerRadius: 4.0)
+        ammoCard = SKShapeNode(rectOf: CGSize(width: 74.0, height: 18.0), cornerRadius: 4.0)
         ammoCard.fillColor = SKColor(red: 0.10, green: 0.08, blue: 0.14, alpha: 0.70)
         ammoCard.strokeColor = SKColor(red: 0.30, green: 0.70, blue: 0.90, alpha: 0.85)
         ammoCard.lineWidth = 1.5
         
         ammoLabel = SKLabelNode(fontNamed: "Menlo-Bold")
-        ammoLabel.text = "REV 6/6"
+        ammoLabel.text = "AMMO 6/6"
         ammoLabel.fontSize = 8.5
         ammoLabel.fontColor = SKColor(red: 0.40, green: 0.85, blue: 1.0, alpha: 1.0)
         ammoLabel.verticalAlignmentMode = .center
@@ -250,13 +250,13 @@ public final class GameHUD: SKNode, UIOverlay {
     /// Updates current revolver ammo display.
     public func updateAmmo(current: Int, max: Int, isReloading: Bool) {
         if isReloading {
-            ammoLabel.text = "RELOAD..."
+            ammoLabel.text = "RELOAD"
             ammoLabel.fontColor = SKColor(red: 1.0, green: 0.70, blue: 0.30, alpha: 1.0)
         } else if current == 0 {
-            ammoLabel.text = "EMPTY!"
+            ammoLabel.text = "AMMO 0/\(max)"
             ammoLabel.fontColor = SKColor(red: 1.0, green: 0.35, blue: 0.35, alpha: 1.0)
         } else {
-            ammoLabel.text = "REV \(current)/\(max)"
+            ammoLabel.text = "AMMO \(current)/\(max)"
             ammoLabel.fontColor = SKColor(red: 0.40, green: 0.85, blue: 1.0, alpha: 1.0)
         }
     }
