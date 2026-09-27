@@ -284,8 +284,24 @@ public final class GameHUD: SKNode, UIOverlay {
         }
     }
     
-    public func showLevelCompleteOverlay(coinsCollected: Int, totalCoins: Int, elapsedTime: TimeInterval) {
-        levelCompleteOverlay.displayStats(coins: coinsCollected, total: totalCoins, time: elapsedTime)
+    public func showLevelCompleteOverlay(
+        coinsCollected: Int,
+        totalCoins: Int,
+        elapsedTime: TimeInterval,
+        bestCoins: Int,
+        bestTime: TimeInterval,
+        isNewBestCoins: Bool,
+        isNewBestTime: Bool
+    ) {
+        levelCompleteOverlay.displayStats(
+            coins: coinsCollected,
+            total: totalCoins,
+            time: elapsedTime,
+            bestCoins: bestCoins,
+            bestTime: bestTime,
+            isNewBestCoins: isNewBestCoins,
+            isNewBestTime: isNewBestTime
+        )
         levelCompleteOverlay.isHidden = false
         pauseOverlay.isHidden = true
         gameOverOverlay.isHidden = true
@@ -538,8 +554,20 @@ private final class LevelCompleteModalOverlay: SKNode {
     private let scrim: SKShapeNode
     private let panel: SKShapeNode
     private let titleLabel: SKLabelNode
+    
+    // Current Run Metrics
+    private let currentHeaderLabel: SKLabelNode
     private let coinsLabel: SKLabelNode
     private let timeLabel: SKLabelNode
+    
+    // Best Records
+    private let bestHeaderLabel: SKLabelNode
+    private let bestCoinsLabel: SKLabelNode
+    private let bestTimeLabel: SKLabelNode
+    
+    // New Record Badges
+    private let newRecordBadge: SKLabelNode
+    
     private let continueButton: HUDButton
     
     public var onContinueTapped: (() -> Void)?
@@ -550,32 +578,84 @@ private final class LevelCompleteModalOverlay: SKNode {
         scrim.strokeColor = .clear
         scrim.zPosition = 100
         
-        panel = SKShapeNode(rectOf: CGSize(width: 200, height: 140), cornerRadius: 8.0)
+        panel = SKShapeNode(rectOf: CGSize(width: 230, height: 180), cornerRadius: 8.0)
         panel.fillColor = SKColor(red: 0.10, green: 0.08, blue: 0.16, alpha: 0.95)
         panel.strokeColor = SKColor(red: 1.0, green: 0.85, blue: 0.30, alpha: 0.90)
         panel.lineWidth = 2.0
         panel.zPosition = 101
         
+        // Title
         titleLabel = SKLabelNode(fontNamed: "Menlo-Bold")
         titleLabel.text = "MINE CLEARED!"
         titleLabel.fontSize = 15.0
         titleLabel.fontColor = SKColor(red: 1.0, green: 0.85, blue: 0.30, alpha: 1.0)
-        titleLabel.position = CGPoint(x: 0, y: 40.0)
+        titleLabel.position = CGPoint(x: 0, y: 64.0)
         titleLabel.zPosition = 102
         
-        coinsLabel = SKLabelNode(fontNamed: "Menlo-Bold")
-        coinsLabel.text = "COINS: 0 / 20"
-        coinsLabel.fontSize = 10.5
+        // New Best Record Badge (Subtle top banner)
+        newRecordBadge = SKLabelNode(fontNamed: "Menlo-Bold")
+        newRecordBadge.text = "★ NEW BEST! ★"
+        newRecordBadge.fontSize = 8.5
+        newRecordBadge.fontColor = SKColor(red: 0.35, green: 1.0, blue: 0.50, alpha: 1.0)
+        newRecordBadge.position = CGPoint(x: 0, y: 48.0)
+        newRecordBadge.zPosition = 102
+        newRecordBadge.isHidden = true
+        
+        // Current Run
+        currentHeaderLabel = SKLabelNode(fontNamed: "Menlo-Bold")
+        currentHeaderLabel.text = "CURRENT RUN"
+        currentHeaderLabel.fontSize = 8.5
+        currentHeaderLabel.fontColor = SKColor(red: 0.70, green: 0.65, blue: 0.80, alpha: 1.0)
+        currentHeaderLabel.position = CGPoint(x: -54.0, y: 30.0)
+        currentHeaderLabel.zPosition = 102
+        
+        coinsLabel = SKLabelNode(fontNamed: "Menlo")
+        coinsLabel.text = "Coins: 0 / 20"
+        coinsLabel.fontSize = 9.0
         coinsLabel.fontColor = SKColor(red: 0.95, green: 0.80, blue: 0.35, alpha: 1.0)
-        coinsLabel.position = CGPoint(x: 0, y: 16.0)
+        coinsLabel.horizontalAlignmentMode = .center
+        coinsLabel.position = CGPoint(x: -54.0, y: 14.0)
         coinsLabel.zPosition = 102
         
         timeLabel = SKLabelNode(fontNamed: "Courier-Bold")
-        timeLabel.text = "TIME: 00:00"
-        timeLabel.fontSize = 10.5
+        timeLabel.text = "Time: 00:00"
+        timeLabel.fontSize = 9.0
         timeLabel.fontColor = SKColor(white: 0.90, alpha: 1.0)
-        timeLabel.position = CGPoint(x: 0, y: -4.0)
+        timeLabel.horizontalAlignmentMode = .center
+        timeLabel.position = CGPoint(x: -54.0, y: -2.0)
         timeLabel.zPosition = 102
+        
+        // Best Records
+        bestHeaderLabel = SKLabelNode(fontNamed: "Menlo-Bold")
+        bestHeaderLabel.text = "BEST RECORD"
+        bestHeaderLabel.fontSize = 8.5
+        bestHeaderLabel.fontColor = SKColor(red: 0.70, green: 0.65, blue: 0.80, alpha: 1.0)
+        bestHeaderLabel.position = CGPoint(x: 54.0, y: 30.0)
+        bestHeaderLabel.zPosition = 102
+        
+        bestCoinsLabel = SKLabelNode(fontNamed: "Menlo")
+        bestCoinsLabel.text = "Coins: 0 / 20"
+        bestCoinsLabel.fontSize = 9.0
+        bestCoinsLabel.fontColor = SKColor(red: 1.0, green: 0.85, blue: 0.40, alpha: 1.0)
+        bestCoinsLabel.horizontalAlignmentMode = .center
+        bestCoinsLabel.position = CGPoint(x: 54.0, y: 14.0)
+        bestCoinsLabel.zPosition = 102
+        
+        bestTimeLabel = SKLabelNode(fontNamed: "Courier-Bold")
+        bestTimeLabel.text = "Time: 00:00"
+        bestTimeLabel.fontSize = 9.0
+        bestTimeLabel.fontColor = SKColor(red: 0.40, green: 0.90, blue: 1.0, alpha: 1.0)
+        bestTimeLabel.horizontalAlignmentMode = .center
+        bestTimeLabel.position = CGPoint(x: 54.0, y: -2.0)
+        bestTimeLabel.zPosition = 102
+        
+        // Divider line between current and best
+        let divider = SKShapeNode(rectOf: CGSize(width: 1.0, height: 42.0))
+        divider.fillColor = SKColor(white: 0.35, alpha: 0.60)
+        divider.strokeColor = .clear
+        divider.position = CGPoint(x: 0, y: 15.0)
+        divider.zPosition = 102
+        panel.addChild(divider)
         
         continueButton = HUDButton(
             label: "CONTINUE",
@@ -584,7 +664,7 @@ private final class LevelCompleteModalOverlay: SKNode {
             strokeColor: SKColor(red: 0.45, green: 0.90, blue: 0.55, alpha: 0.95),
             fontSize: 10.5
         )
-        continueButton.position = CGPoint(x: 0, y: -38.0)
+        continueButton.position = CGPoint(x: 0, y: -45.0)
         continueButton.zPosition = 102
         
         super.init()
@@ -593,8 +673,13 @@ private final class LevelCompleteModalOverlay: SKNode {
         addChild(scrim)
         addChild(panel)
         panel.addChild(titleLabel)
+        panel.addChild(newRecordBadge)
+        panel.addChild(currentHeaderLabel)
         panel.addChild(coinsLabel)
         panel.addChild(timeLabel)
+        panel.addChild(bestHeaderLabel)
+        panel.addChild(bestCoinsLabel)
+        panel.addChild(bestTimeLabel)
         panel.addChild(continueButton)
         
         continueButton.onTapped = { [weak self] in self?.onContinueTapped?() }
@@ -608,12 +693,42 @@ private final class LevelCompleteModalOverlay: SKNode {
         scrim.path = CGPath(rect: CGRect(x: -viewportSize.width/2 - 50, y: -viewportSize.height/2 - 50, width: viewportSize.width + 100, height: viewportSize.height + 100), transform: nil)
     }
     
-    func displayStats(coins: Int, total: Int, time: TimeInterval) {
-        coinsLabel.text = "COINS: \(coins) / \(total)"
-        let totalSeconds = Int(time)
-        let min = totalSeconds / 60
-        let sec = totalSeconds % 60
-        timeLabel.text = String(format: "TIME: %02d:%02d", min, sec)
+    func displayStats(
+        coins: Int,
+        total: Int,
+        time: TimeInterval,
+        bestCoins: Int,
+        bestTime: TimeInterval,
+        isNewBestCoins: Bool,
+        isNewBestTime: Bool
+    ) {
+        // Current Run
+        coinsLabel.text = "Coins: \(coins)/\(total)"
+        let curSeconds = Int(time)
+        let curMin = curSeconds / 60
+        let curSec = curSeconds % 60
+        timeLabel.text = String(format: "Time: %02d:%02d", curMin, curSec)
+        
+        // Best Records
+        bestCoinsLabel.text = "Coins: \(bestCoins)/\(total)"
+        let bestSeconds = Int(bestTime)
+        let bMin = bestSeconds / 60
+        let bSec = bestSeconds % 60
+        bestTimeLabel.text = String(format: "Time: %02d:%02d", bMin, bSec)
+        
+        // Subtle New Best Record Indicator
+        if isNewBestTime && isNewBestCoins {
+            newRecordBadge.text = "★ NEW RECORD TIME & COINS! ★"
+            newRecordBadge.isHidden = false
+        } else if isNewBestTime {
+            newRecordBadge.text = "★ NEW BEST TIME! ★"
+            newRecordBadge.isHidden = false
+        } else if isNewBestCoins {
+            newRecordBadge.text = "★ NEW BEST COINS! ★"
+            newRecordBadge.isHidden = false
+        } else {
+            newRecordBadge.isHidden = true
+        }
     }
     
     func handleTouchBegan(_ point: CGPoint) -> Bool {

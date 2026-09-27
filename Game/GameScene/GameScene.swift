@@ -297,15 +297,29 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
     
     // MARK: - Level Completion Coordination
     
+    /// Current level identifier.
+    public let currentLevelID: String = "mine_01"
+    
+    /// Cached completion result for level complete modal display.
+    private var lastCompletionResult: SaveManager.LevelCompletionResult?
+    
     /// Handles transitioning the game state and stats when the level exit sequence finishes.
     private func handleLevelCompletion() {
         guard gameStateManager.currentState == .playing else { return }
         
+        // Record completion statistics in LevelStats (Current run)
+        levelStats.markCompleted(elapsedTime: levelElapsedTime)
+        
+        // Persist completion and best records via SaveManager
+        let result = SaveManager.shared.markLevelCompleted(
+            levelID: currentLevelID,
+            coins: levelStats.coinsCollected,
+            time: levelElapsedTime
+        )
+        self.lastCompletionResult = result
+        
         // Transition game state machine to LEVEL_COMPLETE
         gameStateManager.transition(to: .levelComplete)
-        
-        // Record completion statistics
-        levelStats.markCompleted(elapsedTime: levelElapsedTime)
     }
     
     public func didEnd(_ contact: SKPhysicsContact) {
@@ -474,10 +488,19 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         case .levelComplete:
             self.isPaused = false
             touchControls?.setControlsActive(false)
+            let bCoins = lastCompletionResult?.currentBestCoins ?? SaveManager.shared.bestCoins(for: currentLevelID) ?? levelStats.coinsCollected
+            let bTime = lastCompletionResult?.currentBestTime ?? SaveManager.shared.bestTime(for: currentLevelID) ?? levelElapsedTime
+            let isNewCoins = lastCompletionResult?.isNewBestCoins ?? false
+            let isNewTime = lastCompletionResult?.isNewBestTime ?? false
+            
             gameHUD?.showLevelCompleteOverlay(
                 coinsCollected: levelStats.coinsCollected,
                 totalCoins: levelStats.totalCoins,
-                elapsedTime: levelElapsedTime
+                elapsedTime: levelElapsedTime,
+                bestCoins: bCoins,
+                bestTime: bTime,
+                isNewBestCoins: isNewCoins,
+                isNewBestTime: isNewTime
             )
         case .playerDead:
             self.isPaused = false
