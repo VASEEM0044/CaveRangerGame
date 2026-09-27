@@ -39,10 +39,11 @@ xcodebuild clean archive \
   CODE_SIGNING_REQUIRED=NO
 
 # 3. Locate compiled .app bundle inside archive
-APP_BUNDLE="${ARCHIVE_PATH}/Products/Applications/${PROJECT_NAME}.app"
+APP_BUNDLE=$(find "${ARCHIVE_PATH}/Products/Applications" -name "*.app" -maxdepth 1 2>/dev/null | head -n 1)
 
-if [ ! -d "${APP_BUNDLE}" ]; then
-  echo "❌ Error: App bundle not found at ${APP_BUNDLE}"
+if [ -z "${APP_BUNDLE}" ] || [ ! -d "${APP_BUNDLE}" ]; then
+  echo "❌ Error: App bundle not found in ${ARCHIVE_PATH}/Products/Applications/"
+  ls -la "${ARCHIVE_PATH}/Products/Applications" || true
   exit 1
 fi
 
