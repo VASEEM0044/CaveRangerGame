@@ -12,6 +12,8 @@ public final class PlayerController {
     /// Tracks which movement keys are currently held down.
     private var leftPressed: Bool = false
     private var rightPressed: Bool = false
+    private var upPressed: Bool = false
+    private var downPressed: Bool = false
     private var jumpPressed: Bool = false
     private var attackPressed: Bool = false
     private var firePressed: Bool = false
@@ -29,6 +31,9 @@ public final class PlayerController {
     /// On-screen virtual joystick horizontal axis (-1.0 to +1.0).
     public var touchInputDirection: CGFloat = 0.0
     
+    /// On-screen virtual joystick vertical axis (-1.0 to +1.0).
+    public var touchVerticalDirection: CGFloat = 0.0
+    
     /// Edge-triggered touch action flags.
     public var touchJumpRequested: Bool = false
     public var touchAttackRequested: Bool = false
@@ -44,6 +49,17 @@ public final class PlayerController {
         if rightPressed { dir += 1.0 }
         if abs(touchInputDirection) > 0.01 {
             dir += touchInputDirection
+        }
+        return max(-1.0, min(1.0, dir))
+    }
+    
+    /// Vertical input direction: -1.0 (down), 0.0 (neutral), +1.0 (up).
+    public var verticalDirection: CGFloat {
+        var dir: CGFloat = 0.0
+        if downPressed { dir -= 1.0 }
+        if upPressed   { dir += 1.0 }
+        if abs(touchVerticalDirection) > 0.01 {
+            dir += touchVerticalDirection
         }
         return max(-1.0, min(1.0, dir))
     }
@@ -162,6 +178,12 @@ public final class PlayerController {
             
         case .keyD, .rightArrow:
             rightPressed = pressed
+            
+        case .keyW, .upArrow:
+            upPressed = pressed
+            
+        case .keyS, .downArrow:
+            downPressed = pressed
             
         case .spacebar:
             jumpPressed = pressed

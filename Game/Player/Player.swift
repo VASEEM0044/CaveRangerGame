@@ -45,6 +45,9 @@ public final class Player: SKSpriteNode, PlayerEntity {
     /// Whether the player is currently touching a ground surface.
     public var isGrounded: Bool = false
     
+    /// Whether the player is actively climbing a ladder.
+    public var isClimbing: Bool = false
+    
     /// Remaining coyote time window in seconds allowing jumps after walking off an edge.
     private var coyoteTimer: TimeInterval = 0.0
     
@@ -146,13 +149,8 @@ public final class Player: SKSpriteNode, PlayerEntity {
     // MARK: - Physics Body
     
     private func setupPhysicsBody() {
-        // Use a smaller rectangular body around the character's torso and legs,
-        // not the full 64×64 rendered size. This prevents snagging on edges and
-        // gives tighter platforming feel.
         let bodyWidth: CGFloat = self.size.width * 0.45   // ~29 pt wide
         let bodyHeight: CGFloat = self.size.height * 0.75 // ~48 pt tall
-        
-        // Offset the body downward so the feet sit at the bottom of the sprite.
         let yOffset: CGFloat = -(self.size.height - bodyHeight) / 2.0 * 0.5
         let bodyCenter = CGPoint(x: 0.0, y: yOffset)
         let bodySize = CGSize(width: bodyWidth, height: bodyHeight)
@@ -161,11 +159,10 @@ public final class Player: SKSpriteNode, PlayerEntity {
         body.categoryBitMask = PhysicsCategory.player.rawValue
         body.collisionBitMask = PhysicsCategory.CollisionMasks.player
         body.contactTestBitMask = PhysicsCategory.ContactMasks.player
-            | PhysicsCategory.ground.rawValue  // Detect ground contact for landing
+            | PhysicsCategory.ground.rawValue
         
-        // The player is dynamic but we drive velocity manually each frame.
         body.isDynamic = true
-        body.affectedByGravity = false        // We apply gravity manually for tighter control.
+        body.affectedByGravity = false
         body.allowsRotation = false
         body.friction = 0.0
         body.restitution = 0.0
@@ -193,32 +190,58 @@ public final class Player: SKSpriteNode, PlayerEntity {
     
     // MARK: - Per-Frame Update
     
-    /// Called every frame by GameScene to apply movement, gravity, and animation.
-    public func update(deltaTime: TimeInterval, inputDirection: CGFloat, jumpRequested: Bool) {
-        let dt = CGFloat(min(deltaTime, 1.0 / 30.0)) // Cap delta to prevent spiral on lag spikes
+    /// Called every frame by GameScene to apply movement, climbing, gravity, and animation.
+    public func update(deltaTime: TimeInterval, inputDirection: CGFloat, verticalDirection: CGFloat, jumpRequested: Bool, ladders: [Ladder] = []) {
+        let dt = CGFloat(min(deltaTime, 1.0 / 30.0))
         
         whip.update(deltaTime: deltaTime)
         revolver.update(deltaTime: deltaTime)
         revolver.updatePosition(playerPosition: self.position, facing: facingDirection)
         
-        applyHorizontalMovement(direction: inputDirection, dt: dt)
-        applyGravityAndJump(jumpRequested: jumpRequested, dt: dt)
+        // Check ladder overlap
+        let playerBounds = CGRect(
+            x: position.x - size.width * 0.25,
+            y: position.y - size.height * 0.4,
+            width: size.width * 0.5,
+            height: size.height * 0.8
+        )
+        let touchingLadder = ladders.contains { $0.climbBounds.intersects(playerBounds) }
+        
+        if touchingLadder && abs(verticalDirection) > 0.2 {
+            isClimbing = true
+        } else if !touchingLadder || jumpRequested {
+            isClimbing = false
+        }
+        
+        if isClimbing {
+            applyClimbingMovement(vertical: verticalDirection, horizontal: inputDirection, dt: dt)
+        } else {
+            applyHorizontalMovement(direction: inputDirection, dt: dt)
+            applyGravityAndJump(jumpRequested: jumpRequested, dt: dt)
+        }
+        
         applyVelocity(dt: dt)
         updateFacing(direction: inputDirection)
         updateAnimationState()
         updateDebugLabel()
     }
     
+    // MARK: - Climbing Movement
+    
+    private func applyClimbingMovement(vertical: CGFloat, horizontal: CGFloat, dt: CGFloat) {
+        let climbSpeed: CGFloat = 110.0
+        velocityY = vertical * climbSpeed
+        velocityX = horizontal * (climbSpeed * 0.6)
+        isGrounded = false
+    }
+    
     // MARK: - Horizontal Movement
     
     private func applyHorizontalMovement(direction: CGFloat, dt: CGFloat) {
         if abs(direction) > 0.01 {
-            // Accelerate towards desired direction
             velocityX += direction * acceleration * dt
-            // Clamp to max speed
             velocityX = max(-movementSpeed, min(movementSpeed, velocityX))
         } else {
-            // Decelerate (friction)
             if abs(velocityX) < deceleration * dt {
                 velocityX = 0.0
             } else {
@@ -232,21 +255,21 @@ public final class Player: SKSpriteNode, PlayerEntity {
     private func applyGravityAndJump(jumpRequested: Bool, dt: CGFloat) {
         let deltaTime = TimeInterval(dt)
         
-        // 1. Update Coyote Timer
         if isGrounded {
             coyoteTimer = GameConfig.Player.coyoteTime
+            if velocityY < 0 {
+                velocityY = 0.0
+            }
         } else if coyoteTimer > 0 {
             coyoteTimer -= deltaTime
         }
         
-        // 2. Update Jump Buffer Timer
         if jumpRequested {
             jumpBufferTimer = GameConfig.Player.jumpBufferTime
         } else if jumpBufferTimer > 0 {
             jumpBufferTimer -= deltaTime
         }
         
-        // 3. Execute Jump if buffered input is available and coyote time or grounded allows it
         let canJump = isGrounded || coyoteTimer > 0.001
         if jumpBufferTimer > 0.001 && canJump {
             velocityY = jumpForce
@@ -261,10 +284,7 @@ public final class Player: SKSpriteNode, PlayerEntity {
             }
         }
         
-        // Apply gravity every frame (manual simulation)
         velocityY -= gravity * dt
-        
-        // Clamp terminal velocity
         velocityY = max(-GameConfig.Player.maxFallSpeed, velocityY)
     }
     
@@ -280,12 +300,11 @@ public final class Player: SKSpriteNode, PlayerEntity {
     private func updateFacing(direction: CGFloat) {
         if direction > 0.01 {
             facingDirection = .right
-            self.xScale = abs(self.xScale) // Face right (default sheet orientation)
+            self.xScale = abs(self.xScale)
         } else if direction < -0.01 {
             facingDirection = .left
-            self.xScale = -abs(self.xScale) // Flip horizontally
+            self.xScale = -abs(self.xScale)
         }
-        // If direction == 0, keep current facing
     }
     
     // MARK: - Animation State Machine
@@ -293,7 +312,9 @@ public final class Player: SKSpriteNode, PlayerEntity {
     private func updateAnimationState() {
         let newState: PlayerAnimationState
         
-        if isGrounded {
+        if isClimbing {
+            newState = .climb
+        } else if isGrounded {
             if abs(velocityX) > 5.0 {
                 newState = .run
             } else {

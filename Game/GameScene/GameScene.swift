@@ -194,12 +194,18 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         player.update(
             deltaTime: deltaTime,
             inputDirection: playerController.inputDirection,
-            jumpRequested: playerController.jumpRequested
+            verticalDirection: playerController.verticalDirection,
+            jumpRequested: playerController.jumpRequested,
+            ladders: mineLevel.ladders
         )
         
         // Handle whip attack input (J or X key)
         if playerController.attackRequested {
-            player.performWhipAttack(enemies: mineLevel.snakes, parentScene: self)
+            var attackTargets: [EnemyEntity] = []
+            attackTargets.append(contentsOf: mineLevel.snakes)
+            attackTargets.append(contentsOf: mineLevel.scorpions)
+            attackTargets.append(contentsOf: mineLevel.bats)
+            player.performWhipAttack(enemies: attackTargets, parentScene: self)
         }
         
         // Handle revolver fire input (K key)
@@ -224,9 +230,19 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
             bullet.update(deltaTime: deltaTime)
         }
         
-        // Update all active snake enemies in the level
+        // Update all active snake enemies
         for snake in mineLevel.snakes {
             snake.update(deltaTime: deltaTime, currentTime: currentTime, player: player)
+        }
+        
+        // Update all active scorpion enemies
+        for scorpion in mineLevel.scorpions {
+            scorpion.update(deltaTime: deltaTime)
+        }
+        
+        // Update all active bat enemies
+        for bat in mineLevel.bats {
+            bat.update(deltaTime: deltaTime, player: player)
         }
         
         // Safety check for level boundaries & death pit fall
@@ -272,17 +288,22 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
         // Player ↔ Enemy contact
         if bodyA.categoryBitMask == PhysicsCategory.player.rawValue &&
            bodyB.categoryBitMask == PhysicsCategory.enemy.rawValue {
-            if let snake = bodyB.node as? SnakeEnemy, snake.isAlive {
-                player.takeDamage(amount: snake.damage)
+            if let enemy = bodyB.node as? EnemyEntity, enemy.isAlive {
+                player.takeDamage(amount: 1)
                 gameCamera.shake(intensity: 3.5, duration: 0.10)
             }
         }
         
-        // Player ↔ Collectible contact
+        // Player ↔ Collectible contact (Coins & Money Bags)
         if bodyA.categoryBitMask == PhysicsCategory.player.rawValue &&
            bodyB.categoryBitMask == PhysicsCategory.collectible.rawValue {
             if let collectible = bodyB.node as? CollectibleEntity {
                 collectible.onCollect(by: player)
+            } else if let prop = bodyB.node as? CaveProp, prop.propType == .moneyBag {
+                AudioManager.shared.playSFX(.coinCollect)
+                levelStats.recordCoinCollected(value: 5)
+                VFXManager.createCoinSparkles(at: prop.position, in: self, particleCount: 12)
+                prop.removeFromParent()
             }
         }
         
@@ -291,6 +312,18 @@ public class GameScene: SKScene, SKPhysicsContactDelegate, GameStateDelegate {
            bodyB.categoryBitMask == PhysicsCategory.exit.rawValue {
             mineLevel.mineExit.triggerCompletion(player: player)
             gameCamera.shake(intensity: 2.0, duration: 0.12)
+        }
+        
+        // Weapon / Bullet ↔ Breakable Prop
+        if (bodyA.categoryBitMask == PhysicsCategory.ground.rawValue || bodyA.categoryBitMask == PhysicsCategory.hazard.rawValue) &&
+           (bodyB.categoryBitMask == PhysicsCategory.weapon.rawValue || bodyB.categoryBitMask == PhysicsCategory.projectile.rawValue) {
+            if let prop = bodyA.node as? CaveProp {
+                prop.smash(in: self) { [weak self] coin in
+                    coin.onCollectedHandler = { [weak self] c in
+                        self?.levelStats.recordCoinCollected(value: c.value)
+                    }
+                }
+            }
         }
         
         // Bullet ↔ Enemy contact

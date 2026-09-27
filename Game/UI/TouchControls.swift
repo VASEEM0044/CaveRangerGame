@@ -40,6 +40,9 @@ public final class TouchControls: SKNode {
     /// Current normalized horizontal joystick axis: -1.0 (left), 0.0 (neutral), +1.0 (right).
     public private(set) var horizontalAxis: CGFloat = 0.0
     
+    /// Current normalized vertical joystick axis: -1.0 (down), 0.0 (neutral), +1.0 (up).
+    public private(set) var verticalAxis: CGFloat = 0.0
+    
     /// Base center position of the joystick in local coordinates.
     private var joystickCenter: CGPoint = .zero
     
@@ -323,20 +326,32 @@ public final class TouchControls: SKNode {
             } else {
                 horizontalAxis = 0.0
             }
+            
+            // Calculate vertical axis
+            if abs(dy) > joystickDeadzone {
+                let rawVert = dy / joystickMaxRadius
+                verticalAxis = max(-1.0, min(1.0, rawVert))
+            } else {
+                verticalAxis = 0.0
+            }
         } else {
             joystickThumb.position = joystickCenter
             horizontalAxis = 0.0
+            verticalAxis = 0.0
         }
         
         // Pass to PlayerController
         playerController?.touchInputDirection = horizontalAxis
+        playerController?.touchVerticalDirection = verticalAxis
     }
     
     /// Snaps the joystick thumb back to center and zeroes out input axis.
     private func releaseJoystick() {
         joystickTouch = nil
         horizontalAxis = 0.0
+        verticalAxis = 0.0
         playerController?.touchInputDirection = 0.0
+        playerController?.touchVerticalDirection = 0.0
         
         joystickThumb.removeAction(forKey: "recenter")
         let recenterAction = SKAction.move(to: joystickCenter, duration: 0.06)

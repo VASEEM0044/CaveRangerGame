@@ -1,137 +1,66 @@
 import SpriteKit
 
-/// Builds and manages the underground mine level environment, visuals, depth/background, and collision geometry.
+/// Builds and manages the underground mine level environment, multi-tier rocky visuals,
+/// depth/background, ladders, interactive props, enemies, and collision geometry.
 public final class MineLevel {
     
     // MARK: - Level Dimensions
     
     /// Total world width of the mine level.
-    public static let worldWidth: CGFloat = 2400.0
+    public static let worldWidth: CGFloat = 2600.0
     
-    /// Total world height of the mine level.
-    public static let worldHeight: CGFloat = 720.0
+    /// Total world height of the multi-tier cave (supporting 3 vertical tiers).
+    public static let worldHeight: CGFloat = 800.0
     
-    /// Death fall threshold Y coordinate (if player falls below this, reset position).
+    /// Death fall threshold Y coordinate.
     public static let deathY: CGFloat = -100.0
     
-    /// Player starting spawn position in the mine.
-    public static let spawnPosition = CGPoint(x: 100.0, y: 180.0)
+    /// Player starting spawn position on Floor 1 (bottom left).
+    public static let spawnPosition = CGPoint(x: 100.0, y: 160.0)
     
-    // MARK: - Nodes
+    // MARK: - Nodes & Containers
     
-    /// Root node containing all level visual elements and background.
     public let levelNode: SKNode
-    
-    /// Collision system handling static ground/walls/platforms.
     public let collision: LevelCollision
     
-    /// Active snake enemies in the level.
+    // MARK: - Entities
+    
     public private(set) var snakes: [SnakeEnemy] = []
-    
-    /// Placed gold coins in the level.
+    public private(set) var scorpions: [ScorpionEnemy] = []
+    public private(set) var bats: [BatEnemy] = []
     public private(set) var coins: [Coin] = []
-    
-    /// Mine exit door portal at the end of the cave.
+    public private(set) var ladders: [Ladder] = []
+    public private(set) var props: [CaveProp] = []
     public private(set) var mineExit: MineExit!
     
     // MARK: - Initialization
     
     public init() {
-        CrashLogger.shared.logSync("MineLevel init started")
+        CrashLogger.shared.logSync("MineLevel init started (Multi-Tier 2D Rocky Cave)")
         levelNode = SKNode()
         levelNode.name = "mine_level"
         collision = LevelCollision()
         
-        CrashLogger.shared.logSync("MineLevel building background...")
         buildBackground()
-        CrashLogger.shared.logSync("MineLevel building geometry and visuals...")
-        buildLevelGeometryAndVisuals()
-        CrashLogger.shared.logSync("MineLevel spawning snakes...")
-        spawnSnakes()
-        CrashLogger.shared.logSync("MineLevel spawning coins...")
+        buildMultiTierRockyGeometry()
+        spawnLadders()
+        spawnProps()
+        spawnEnemies()
         spawnCoins()
-        CrashLogger.shared.logSync("MineLevel spawning mine exit...")
         spawnMineExit()
         
         levelNode.addChild(collision.collisionNode)
         levelNode.addChild(collision.boundaryNode)
-        CrashLogger.shared.logSync("MineLevel init finished successfully")
-    }
-    
-    // MARK: - Spawning Methods
-    
-    private func spawnMineExit() {
-        // Place MineExit at the end of Section 5 (Open Cave Area)
-        let exitPosition = CGPoint(x: 2260.0, y: 200.0)
-        mineExit = MineExit(position: exitPosition)
-        levelNode.addChild(mineExit)
-    }
-    
-    private func spawnSnakes() {
-        // Place 3 test snakes at reachable ground locations
-        let spawnPoints: [CGPoint] = [
-            CGPoint(x: 380.0, y: 150.0),  // 1. Starting corridor
-            CGPoint(x: 1180.0, y: 190.0), // 2. Lower cave section
-            CGPoint(x: 1900.0, y: 170.0)  // 3. Open cave section
-        ]
-        
-        for pos in spawnPoints {
-            let snake = SnakeEnemy(spawnPosition: pos)
-            snakes.append(snake)
-            levelNode.addChild(snake)
-        }
-    }
-    
-    private func spawnCoins() {
-        // 20 gold coins distributed across 5 level sections
-        let coinPositions: [CGPoint] = [
-            // Section 1: Starting Corridor (3)
-            CGPoint(x: 200.0, y: 155.0),
-            CGPoint(x: 320.0, y: 155.0),
-            CGPoint(x: 450.0, y: 155.0),
-            
-            // Section 2: Stepping Platforms & Gap (4)
-            CGPoint(x: 630.0, y: 70.0),
-            CGPoint(x: 740.0, y: 170.0),
-            CGPoint(x: 890.0, y: 220.0),
-            CGPoint(x: 950.0, y: 220.0),
-            
-            // Section 3: Lower Cave Section (3)
-            CGPoint(x: 1080.0, y: 195.0),
-            CGPoint(x: 1200.0, y: 195.0),
-            CGPoint(x: 1320.0, y: 195.0),
-            
-            // Section 4: Raised Wooden Trestle & Ledge (5)
-            CGPoint(x: 1440.0, y: 255.0),
-            CGPoint(x: 1490.0, y: 255.0),
-            CGPoint(x: 1580.0, y: 315.0),
-            CGPoint(x: 1650.0, y: 315.0),
-            CGPoint(x: 1720.0, y: 315.0),
-            
-            // Section 5: Open Cave & High Platform (5)
-            CGPoint(x: 1860.0, y: 175.0),
-            CGPoint(x: 2000.0, y: 295.0),
-            CGPoint(x: 2080.0, y: 295.0),
-            CGPoint(x: 2200.0, y: 175.0),
-            CGPoint(x: 2300.0, y: 175.0)
-        ]
-        
-        for pos in coinPositions {
-            let coin = Coin(position: pos)
-            coins.append(coin)
-            levelNode.addChild(coin)
-        }
+        CrashLogger.shared.logSync("MineLevel multi-tier init finished successfully")
     }
     
     // MARK: - Background & Atmosphere
     
     private func buildBackground() {
-        // Deep background layer
         let bgGroup = SKNode()
         bgGroup.zPosition = -20
         bgGroup.name = "background_layer"
         
-        // Dark cave backdrop panels spanning the level width
         let panelWidth: CGFloat = 600.0
         let panelHeight: CGFloat = MineLevel.worldHeight
         let numPanels = Int(ceil(MineLevel.worldWidth / panelWidth))
@@ -141,165 +70,296 @@ public final class MineLevel {
             panel.position = CGPoint(x: CGFloat(i) * panelWidth + panelWidth / 2.0, y: panelHeight / 2.0)
             bgGroup.addChild(panel)
             
-            // Add decorative mine entrance frames in the background for cave depth
+            // Decorative cave wall details
             let entranceIndex = i % 4
             let entranceTex = MineTileset.entranceTexture(row: entranceIndex / 2, column: entranceIndex % 2)
-            let entranceNode = SKSpriteNode(texture: entranceTex, size: CGSize(width: 320, height: 320))
-            entranceNode.position = CGPoint(x: CGFloat(i) * panelWidth + panelWidth / 2.0, y: 220.0)
-            entranceNode.alpha = 0.35 // Dimmed for depth feel
+            let entranceNode = SKSpriteNode(texture: entranceTex, size: CGSize(width: 340, height: 340))
+            entranceNode.position = CGPoint(x: CGFloat(i) * panelWidth + panelWidth / 2.0, y: 380.0)
+            entranceNode.alpha = 0.25
             bgGroup.addChild(entranceNode)
         }
         
         levelNode.addChild(bgGroup)
     }
     
-    // MARK: - Level Geometry & Visual Building
+    // MARK: - Multi-Tier Rocky Geometry
     
-    private func buildLevelGeometryAndVisuals() {
+    private func buildMultiTierRockyGeometry() {
         var collisionRects: [CollisionRect] = []
         
-        // ----------------------------------------------------
-        // SECTION 1: STARTING CAVE CORRIDOR (x: 0 .. 600)
-        // ----------------------------------------------------
-        // Ground floor: y=0 to y=100 (height 100)
-        addGroundBlock(x: 0, y: 0, w: 600, h: 120, color: MineTileset.groundDirt, rects: &collisionRects)
+        // =========================================================================
+        // TIER 1: LOWER CAVE FLOOR (Y: 0 .. 120)
+        // =========================================================================
+        // Section 1A: Spawn floor (x: 0 .. 700, y: 0 .. 120)
+        addRockyLedge(x: 0, y: 0, w: 700, h: 120, rects: &collisionRects)
         
-        // Left starting wall (x: 0..40, y: 120..720)
-        addWallBlock(x: 0, y: 120, w: 40, h: 600, rects: &collisionRects)
+        // Left boundary starting rock wall (x: 0..40, y: 120..800)
+        addRockWall(x: 0, y: 120, w: 40, h: 680, rects: &collisionRects)
         
-        // Ceiling over starting corridor (x: 0..600, y: 360..720)
-        addWallBlock(x: 0, y: 360, w: 600, h: 360, rects: &collisionRects)
+        // Section 1B: Stepping stones over dark pit (x: 700 .. 1100)
+        // Pit gap: x: 700 .. 800 (Deadly gap or drop zone)
+        addRockyLedge(x: 820, y: 0, w: 220, h: 80, rects: &collisionRects)
         
-        // Decorative support beam at starting corridor
-        addWoodSupport(x: 200, y: 120, height: 180)
-        addWoodSupport(x: 450, y: 120, height: 180)
+        // Section 1C: Ground floor continuation (x: 1100 .. 2600, y: 0 .. 120)
+        addRockyLedge(x: 1100, y: 0, w: 1500, h: 120, rects: &collisionRects)
         
-        // ----------------------------------------------------
-        // SECTION 2: SMALL PLATFORM & GAP (x: 600 .. 1000)
-        // ----------------------------------------------------
-        // Lower pit floor (x: 600..1000, y: 0..40) - hazard/deep cave floor
-        addGroundBlock(x: 600, y: 0, w: 400, h: 40, color: MineTileset.rockDark, rects: &collisionRects)
+        // =========================================================================
+        // TIER 2: MID CAVERN PLATFORMS & ROCKY LEDGES (Y: 280 .. 340)
+        // =========================================================================
+        // Ledge 2A (x: 200 .. 650, y: 300, h: 28)
+        addRockyLedge(x: 200, y: 300, w: 450, h: 28, isOneWay: true, rects: &collisionRects)
         
-        // Raised stepping platform 1 (x: 680..800, y: 140, h: 20) - One-way platform
-        addPlatform(x: 680, y: 140, w: 120, h: 16, isOneWay: true, rects: &collisionRects)
+        // Ledge 2B (x: 800 .. 1400, y: 320, h: 32)
+        addRockyLedge(x: 800, y: 320, w: 600, h: 32, isOneWay: true, rects: &collisionRects)
         
-        // Stepping platform 2 (x: 860..980, y: 190, h: 20) - One-way platform
-        addPlatform(x: 860, y: 190, w: 120, h: 16, isOneWay: true, rects: &collisionRects)
+        // Ledge 2C: Wooden Trestle Bridge (x: 1550 .. 2000, y: 300, h: 24)
+        addWoodenPlatform(x: 1550, y: 300, w: 450, h: 24, isOneWay: true, rects: &collisionRects)
         
-        // ----------------------------------------------------
-        // SECTION 3: LOWER CAVE SECTION (x: 1000 .. 1400)
-        // ----------------------------------------------------
-        // Ground floor at y=0..160
-        addGroundBlock(x: 1000, y: 0, w: 400, h: 160, color: MineTileset.groundDirt, rects: &collisionRects)
+        // Ledge 2D (x: 2150 .. 2550, y: 320, h: 32)
+        addRockyLedge(x: 2150, y: 320, w: 400, h: 32, isOneWay: true, rects: &collisionRects)
         
-        // Ceiling (x: 1000..1400, y: 440..720)
-        addWallBlock(x: 1000, y: 440, w: 400, h: 280, rects: &collisionRects)
+        // =========================================================================
+        // TIER 3: UPPER CAVERN & EXIT VAULT (Y: 520 .. 580)
+        // =========================================================================
+        // Upper Ledge 3A (x: 120 .. 500, y: 540, h: 32) - High secret treasure room
+        addRockyLedge(x: 120, y: 540, w: 380, h: 32, isOneWay: true, rects: &collisionRects)
         
-        // Decorative mine entrance in background of lower cave
-        let entranceBg = SKSpriteNode(texture: MineTileset.entranceTexture(row: 1, column: 2), size: CGSize(width: 250, height: 250))
-        entranceBg.position = CGPoint(x: 1200, y: 280)
-        entranceBg.zPosition = -10
-        entranceBg.alpha = 0.6
-        levelNode.addChild(entranceBg)
+        // Upper Ledge 3B (x: 750 .. 1300, y: 540, h: 32) - Bat cavern
+        addRockyLedge(x: 750, y: 540, w: 550, h: 32, isOneWay: true, rects: &collisionRects)
         
-        // ----------------------------------------------------
-        // SECTION 4: RAISED WOODEN PLATFORM & STAIRS (x: 1400 .. 1800)
-        // ----------------------------------------------------
-        // Step 1: Rock ledge (x: 1400..1520, y: 0..220)
-        addGroundBlock(x: 1400, y: 0, w: 120, h: 220, color: MineTileset.rockMedium, rects: &collisionRects)
+        // Upper Ledge 3C (x: 1500 .. 2550, y: 520, h: 36) - Grand Exit Platform
+        addRockyLedge(x: 1500, y: 520, w: 1050, h: 36, isOneWay: false, rects: &collisionRects)
         
-        // Raised wooden platform trestle (x: 1540..1760, y: 280)
-        addWoodenTrestle(x: 1540, y: 280, w: 220, h: 20, rects: &collisionRects)
+        // =========================================================================
+        // CAVE CEILINGS & BOUNDARIES (Y: 740 .. 800)
+        // =========================================================================
+        addRockWall(x: 0, y: 760, w: 2600, h: 40, rects: &collisionRects) // Top ceiling
+        addRockWall(x: 2560, y: 120, w: 40, h: 680, rects: &collisionRects) // Right wall
         
-        // ----------------------------------------------------
-        // SECTION 5: SMALL VERTICAL SECTION & OPEN CAVE AREA (x: 1800 .. 2400)
-        // ----------------------------------------------------
-        // High ledge ground (x: 1800..2360, y: 0..140)
-        addGroundBlock(x: 1800, y: 0, w: 560, h: 140, color: MineTileset.groundDirt, rects: &collisionRects)
+        // Add Wall Torches with warm glow
+        addWallTorch(at: CGPoint(x: 160, y: 220))
+        addWallTorch(at: CGPoint(x: 580, y: 380))
+        addWallTorch(at: CGPoint(x: 1100, y: 400))
+        addWallTorch(at: CGPoint(x: 1650, y: 380))
+        addWallTorch(at: CGPoint(x: 2100, y: 600))
         
-        // Upper platform in open area (x: 1950..2150, y: 260)
-        addPlatform(x: 1950, y: 260, w: 200, h: 18, isOneWay: true, rects: &collisionRects)
-        
-        // Right boundary wall (x: 2360..2400, y: 140..720)
-        addWallBlock(x: 2360, y: 140, w: 40, h: 580, rects: &collisionRects)
-        
-        // Decorative mine exit frame at the end of the cave
-        let exitFrame = SKSpriteNode(texture: MineTileset.entranceTexture(row: 0, column: 0), size: CGSize(width: 280, height: 280))
-        exitFrame.position = CGPoint(x: 2220, y: 280)
-        exitFrame.zPosition = -5
-        levelNode.addChild(exitFrame)
-        
-        // Build merged collision geometry
+        // Build Collision Bodies
         collision.buildCollision(from: collisionRects)
         collision.buildBoundaries(worldSize: CGSize(width: MineLevel.worldWidth, height: MineLevel.worldHeight), deathY: MineLevel.deathY)
     }
     
-    // MARK: - Helper Builders
+    // MARK: - Spawning Ladders
     
-    private func addGroundBlock(x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat, color: SKColor, rects: inout [CollisionRect]) {
-        let block = SKSpriteNode(color: color, size: CGSize(width: w, height: h))
+    private func spawnLadders() {
+        // Ladder 1: Floor 1 to Tier 2 (x: 350, y: 120 .. 300)
+        let lad1 = Ladder(position: CGPoint(x: 350.0, y: 210.0), height: 180.0)
+        ladders.append(lad1)
+        levelNode.addChild(lad1)
+        
+        // Ladder 2: Tier 2 to Tier 3 (x: 260, y: 328 .. 540)
+        let lad2 = Ladder(position: CGPoint(x: 260.0, y: 434.0), height: 212.0)
+        ladders.append(lad2)
+        levelNode.addChild(lad2)
+        
+        // Ladder 3: Floor 1 to Tier 2 (x: 1050, y: 120 .. 320)
+        let lad3 = Ladder(position: CGPoint(x: 1050.0, y: 220.0), height: 200.0)
+        ladders.append(lad3)
+        levelNode.addChild(lad3)
+        
+        // Ladder 4: Tier 2 to Tier 3 (x: 1200, y: 352 .. 540)
+        let lad4 = Ladder(position: CGPoint(x: 1200.0, y: 446.0), height: 188.0)
+        ladders.append(lad4)
+        levelNode.addChild(lad4)
+        
+        // Ladder 5: Tier 2 to Tier 3 Exit Ledge (x: 1850, y: 324 .. 520)
+        let lad5 = Ladder(position: CGPoint(x: 1850.0, y: 422.0), height: 196.0)
+        ladders.append(lad5)
+        levelNode.addChild(lad5)
+    }
+    
+    // MARK: - Spawning Props
+    
+    private func spawnProps() {
+        let propDefs: [(CavePropType, CGPoint)] = [
+            // Tier 1 Props
+            (.crate, CGPoint(x: 480.0, y: 140.0)),
+            (.barrel, CGPoint(x: 520.0, y: 140.0)),
+            (.barrel, CGPoint(x: 1350.0, y: 140.0)),
+            
+            // Tier 2 Props
+            (.crate, CGPoint(x: 420.0, y: 330.0)),
+            (.barrel, CGPoint(x: 920.0, y: 355.0)),
+            (.crate, CGPoint(x: 1680.0, y: 330.0)),
+            (.barrel, CGPoint(x: 2300.0, y: 355.0)),
+            
+            // Tier 3 Treasure & Props
+            (.moneyBag, CGPoint(x: 180.0, y: 575.0)),
+            (.moneyBag, CGPoint(x: 1000.0, y: 575.0)),
+            (.crate, CGPoint(x: 1720.0, y: 555.0)),
+            (.barrel, CGPoint(x: 1760.0, y: 555.0)),
+            (.moneyBag, CGPoint(x: 2450.0, y: 555.0))
+        ]
+        
+        for (type, pos) in propDefs {
+            let prop = CaveProp(type: type, position: pos)
+            props.append(prop)
+            levelNode.addChild(prop)
+        }
+    }
+    
+    // MARK: - Spawning Enemies
+    
+    private func spawnEnemies() {
+        // 1. Cobra Snakes (Tier 1 Ground Patrol)
+        let snakePoints: [CGPoint] = [
+            CGPoint(x: 550.0, y: 145.0),
+            CGPoint(x: 1450.0, y: 145.0),
+            CGPoint(x: 2100.0, y: 145.0)
+        ]
+        for pos in snakePoints {
+            let snake = SnakeEnemy(spawnPosition: pos)
+            snakes.append(snake)
+            levelNode.addChild(snake)
+        }
+        
+        // 2. Scorpions (Tier 2 Ledge Patrol)
+        let scorpionPoints: [CGPoint] = [
+            CGPoint(x: 480.0, y: 332.0),
+            CGPoint(x: 1100.0, y: 354.0),
+            CGPoint(x: 2350.0, y: 354.0)
+        ]
+        for pos in scorpionPoints {
+            let scorpion = ScorpionEnemy(spawnPosition: pos)
+            scorpions.append(scorpion)
+            levelNode.addChild(scorpion)
+        }
+        
+        // 3. Bats (Tier 3 Ceiling Hanging / Roosting)
+        let batPoints: [CGPoint] = [
+            CGPoint(x: 880.0, y: 710.0),
+            CGPoint(x: 1350.0, y: 710.0),
+            CGPoint(x: 2150.0, y: 710.0)
+        ]
+        for pos in batPoints {
+            let bat = BatEnemy(roostPosition: pos)
+            bats.append(bat)
+            levelNode.addChild(bat)
+        }
+    }
+    
+    // MARK: - Spawning Coins & Exit
+    
+    private func spawnCoins() {
+        let coinPositions: [CGPoint] = [
+            // Tier 1 Coins
+            CGPoint(x: 220.0, y: 145.0),
+            CGPoint(x: 300.0, y: 145.0),
+            CGPoint(x: 880.0, y: 115.0),
+            CGPoint(x: 960.0, y: 115.0),
+            CGPoint(x: 1250.0, y: 145.0),
+            CGPoint(x: 1800.0, y: 145.0),
+            
+            // Tier 2 Coins
+            CGPoint(x: 300.0, y: 345.0),
+            CGPoint(x: 580.0, y: 345.0),
+            CGPoint(x: 860.0, y: 370.0),
+            CGPoint(x: 1280.0, y: 370.0),
+            CGPoint(x: 1600.0, y: 345.0),
+            CGPoint(x: 1820.0, y: 345.0),
+            CGPoint(x: 2220.0, y: 370.0),
+            
+            // Tier 3 Coins
+            CGPoint(x: 220.0, y: 590.0),
+            CGPoint(x: 380.0, y: 590.0),
+            CGPoint(x: 820.0, y: 590.0),
+            CGPoint(x: 1120.0, y: 590.0),
+            CGPoint(x: 1600.0, y: 575.0),
+            CGPoint(x: 1950.0, y: 575.0),
+            CGPoint(x: 2150.0, y: 575.0)
+        ]
+        
+        for pos in coinPositions {
+            let coin = Coin(position: pos)
+            coins.append(coin)
+            levelNode.addChild(coin)
+        }
+    }
+    
+    private func spawnMineExit() {
+        // Placed at the top right of Tier 3 (x: 2380, y: 585)
+        let exitPosition = CGPoint(x: 2380.0, y: 585.0)
+        mineExit = MineExit(position: exitPosition)
+        levelNode.addChild(mineExit)
+    }
+    
+    // MARK: - Helper Level Builders
+    
+    private func addRockyLedge(x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat, isOneWay: Bool = false, rects: inout [CollisionRect]) {
+        // 1. Rocky Fill Background / Body (wavy brown cave stone texture)
+        let fillBlock = SKSpriteNode(texture: MineTileset.rockFillTexture, size: CGSize(width: w, height: h))
+        fillBlock.position = CGPoint(x: x + w / 2.0, y: y + h / 2.0)
+        fillBlock.zPosition = 1
+        levelNode.addChild(fillBlock)
+        
+        // 2. Top Walkable Surface Trim with grey interlocking stone border
+        let trimHeight: CGFloat = min(24.0, h)
+        let topTrim = SKSpriteNode(texture: MineTileset.topLedgeTexture, size: CGSize(width: w, height: trimHeight))
+        topTrim.position = CGPoint(x: x + w / 2.0, y: y + h - trimHeight / 2.0)
+        topTrim.zPosition = 2
+        levelNode.addChild(topTrim)
+        
+        rects.append(CollisionRect(position: fillBlock.position, size: CGSize(width: w, height: h), isOneWay: isOneWay))
+    }
+    
+    private func addRockWall(x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat, rects: inout [CollisionRect]) {
+        let block = SKSpriteNode(texture: MineTileset.rockFillTexture, size: CGSize(width: w, height: h))
         block.position = CGPoint(x: x + w / 2.0, y: y + h / 2.0)
         block.zPosition = 1
         levelNode.addChild(block)
         
-        // Top surface trim highlight for rocky ground feel
-        let trim = SKSpriteNode(color: MineTileset.rockLight, size: CGSize(width: w, height: 4.0))
-        trim.position = CGPoint(x: x + w / 2.0, y: y + h - 2.0)
-        trim.zPosition = 2
-        levelNode.addChild(trim)
-        
         rects.append(CollisionRect(position: block.position, size: CGSize(width: w, height: h)))
     }
     
-    private func addWallBlock(x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat, rects: inout [CollisionRect]) {
-        let block = SKSpriteNode(color: MineTileset.rockDark, size: CGSize(width: w, height: h))
-        block.position = CGPoint(x: x + w / 2.0, y: y + h / 2.0)
-        block.zPosition = 1
-        levelNode.addChild(block)
-        
-        rects.append(CollisionRect(position: block.position, size: CGSize(width: w, height: h)))
-    }
-    
-    private func addPlatform(x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat, isOneWay: Bool, rects: inout [CollisionRect]) {
+    private func addWoodenPlatform(x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat, isOneWay: Bool, rects: inout [CollisionRect]) {
         let plat = SKSpriteNode(color: MineTileset.woodBrown, size: CGSize(width: w, height: h))
-        plat.position = CGPoint(x: x + w / 2.0, y: y - h / 2.0)
+        plat.position = CGPoint(x: x + w / 2.0, y: y + h / 2.0)
         plat.zPosition = 3
         levelNode.addChild(plat)
         
-        // Top edge plank highlight
         let highlight = SKSpriteNode(color: MineTileset.woodDark, size: CGSize(width: w, height: 3.0))
-        highlight.position = CGPoint(x: x + w / 2.0, y: y - 1.5)
+        highlight.position = CGPoint(x: x + w / 2.0, y: y + h - 1.5)
         highlight.zPosition = 4
         levelNode.addChild(highlight)
         
         rects.append(CollisionRect(position: plat.position, size: CGSize(width: w, height: h), isOneWay: isOneWay))
     }
     
-    private func addWoodenTrestle(x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat, rects: inout [CollisionRect]) {
-        // Platform top
-        addPlatform(x: x, y: y, w: w, h: h, isOneWay: true, rects: &rects)
+    private func addWallTorch(at position: CGPoint) {
+        // Torch mount base
+        let mount = SKSpriteNode(color: MineTileset.woodDark, size: CGSize(width: 8.0, height: 16.0))
+        mount.position = position
+        mount.zPosition = 3
+        levelNode.addChild(mount)
         
-        // Vertical support legs
-        let leg1 = SKSpriteNode(color: MineTileset.woodDark, size: CGSize(width: 12, height: y - 140))
-        leg1.position = CGPoint(x: x + 20, y: 140 + (y - 140) / 2.0)
-        leg1.zPosition = 2
-        levelNode.addChild(leg1)
+        // Torch head
+        let head = SKSpriteNode(color: SKColor(red: 0.95, green: 0.60, blue: 0.10, alpha: 1.0), size: CGSize(width: 10.0, height: 10.0))
+        head.position = CGPoint(x: position.x, y: position.y + 10.0)
+        head.zPosition = 4
+        levelNode.addChild(head)
         
-        let leg2 = SKSpriteNode(color: MineTileset.woodDark, size: CGSize(width: 12, height: y - 140))
-        leg2.position = CGPoint(x: x + w - 20, y: 140 + (y - 140) / 2.0)
-        leg2.zPosition = 2
-        levelNode.addChild(leg2)
-    }
-    
-    private func addWoodSupport(x: CGFloat, y: CGFloat, height: CGFloat) {
-        let beam = SKSpriteNode(color: MineTileset.woodDark, size: CGSize(width: 14, height: height))
-        beam.position = CGPoint(x: x, y: y + height / 2.0)
-        beam.zPosition = 2
-        levelNode.addChild(beam)
+        // Flickering warm ambient light halo
+        let halo = SKShapeNode(circleOfRadius: 40.0)
+        halo.fillColor = SKColor(red: 1.0, green: 0.75, blue: 0.3, alpha: 0.18)
+        halo.strokeColor = .clear
+        halo.position = CGPoint(x: position.x, y: position.y + 10.0)
+        halo.zPosition = 2
+        levelNode.addChild(halo)
         
-        let cap = SKSpriteNode(color: MineTileset.woodBrown, size: CGSize(width: 36, height: 12))
-        cap.position = CGPoint(x: x, y: y + height - 6)
-        cap.zPosition = 3
-        levelNode.addChild(cap)
+        // Flicker animation
+        let pulse1 = SKAction.scale(to: 1.15, duration: 0.18)
+        let pulse2 = SKAction.scale(to: 0.88, duration: 0.14)
+        let pulse3 = SKAction.scale(to: 1.0, duration: 0.16)
+        halo.run(SKAction.repeatForever(SKAction.sequence([pulse1, pulse2, pulse3])))
     }
 }
+

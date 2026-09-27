@@ -44,45 +44,51 @@ public enum AssetConfig {
         frameHeight: 128.0
     )
     
-    /// Snake enemy sprite sheet (64 × 64 frame size).
+    /// Snake enemy sprite sheet (512 × 512 frame size, 4×4 grid in 2048×2048 sheet).
     public static let snakeEnemy = SpriteSheetDefinition(
         fileName: "snake_enemy.png",
-        frameWidth: 64.0,
-        frameHeight: 64.0
+        frameWidth: 512.0,
+        frameHeight: 512.0
     )
     
-    /// Coin collectible sprite sheet (64 × 64 frame size).
+    /// Coin collectible sprite sheet (512 × 512 frame size, 4×4 grid in 2048×2048 sheet).
     public static let coin = SpriteSheetDefinition(
         fileName: "coin.png",
-        frameWidth: 64.0,
-        frameHeight: 64.0
+        frameWidth: 512.0,
+        frameHeight: 512.0
     )
     
-    /// Whip weapon sprite sheet (64 × 64 frame size).
+    /// Whip weapon sprite sheet (512 × 512 frame size, 4×4 grid in 2048×2048 sheet).
     public static let whip = SpriteSheetDefinition(
         fileName: "whip.png",
-        frameWidth: 64.0,
-        frameHeight: 64.0
+        frameWidth: 512.0,
+        frameHeight: 512.0
     )
     
-    /// Revolver weapon sprite sheet (64 × 64 frame size).
+    /// Revolver weapon sprite sheet (512 × 512 frame size, 4×4 grid in 2048×2048 sheet).
     public static let revolver = SpriteSheetDefinition(
         fileName: "revolver.png",
-        frameWidth: 64.0,
-        frameHeight: 64.0
+        frameWidth: 512.0,
+        frameHeight: 512.0
     )
     
-    /// Mine exit structure / door sprite sheet (128 × 128 frame size).
+    /// Mine exit structure / door sprite sheet (704 × 384 frame size, 4×4 grid in 2816×1536 sheet).
     public static let mineExit = SpriteSheetDefinition(
         fileName: "mine_exit.png",
-        frameWidth: 128.0,
-        frameHeight: 128.0
+        frameWidth: 704.0,
+        frameHeight: 384.0
+    )
+    
+    /// Cave props, ladders, and new enemies sheet (2816 × 1536).
+    public static let cavePropsAndEnemies = SpriteSheetDefinition(
+        fileName: "cave_props_and_enemies.png",
+        frameWidth: 704.0,
+        frameHeight: 384.0
     )
     
     // MARK: - Configurable Tileset Definition
     
     /// Mine cave tileset configuration for environment blocks, hazards, and decorative props.
-    /// Because tiles and props may have varying dimensions, this configuration is fully flexible.
     public struct TilesetConfig: Sendable {
         public let fileName: String
         public var defaultTileWidth: CGFloat
@@ -94,8 +100,8 @@ public enum AssetConfig {
         
         public init(
             fileName: String = "mine_cave_tileset.png",
-            defaultTileWidth: CGFloat = 32.0,
-            defaultTileHeight: CGFloat = 32.0
+            defaultTileWidth: CGFloat = 512.0,
+            defaultTileHeight: CGFloat = 512.0
         ) {
             self.fileName = fileName
             self.defaultTileWidth = defaultTileWidth
@@ -123,6 +129,7 @@ public enum AssetConfig {
         coin,
         whip,
         revolver,
-        mineExit
+        mineExit,
+        cavePropsAndEnemies
     ]
 }
