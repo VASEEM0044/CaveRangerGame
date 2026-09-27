@@ -47,6 +47,10 @@
 		10000038 /* SaveData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000039 /* SaveData.swift */; };
 		10000039 /* SaveManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000040 /* SaveManager.swift */; };
 		10000040 /* CrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000041 /* CrashLogger.swift */; };
+		10000042 /* Ladder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000042 /* Ladder.swift */; };
+		10000043 /* CaveProp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000043 /* CaveProp.swift */; };
+		10000044 /* ScorpionEnemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000044 /* ScorpionEnemy.swift */; };
+		10000045 /* BatEnemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000045 /* BatEnemy.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -92,6 +96,10 @@
 		20000039 /* SaveData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveData.swift; sourceTree = "<group>"; };
 		20000040 /* SaveManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveManager.swift; sourceTree = "<group>"; };
 		20000041 /* CrashLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashLogger.swift; sourceTree = "<group>"; };
+		20000042 /* Ladder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ladder.swift; sourceTree = "<group>"; };
+		20000043 /* CaveProp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaveProp.swift; sourceTree = "<group>"; };
+		20000044 /* ScorpionEnemy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorpionEnemy.swift; sourceTree = "<group>"; };
+		20000045 /* BatEnemy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatEnemy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -223,6 +231,8 @@
 				20000012 /* EnemyFoundation.swift */,
 				20000025 /* Enemy.swift */,
 				20000026 /* SnakeEnemy.swift */,
+				20000044 /* ScorpionEnemy.swift */,
+				20000045 /* BatEnemy.swift */,
 			);
 			path = Enemies;
 			sourceTree = "<group>";
@@ -256,6 +266,8 @@
 				20000022 /* MineTileset.swift */,
 				20000023 /* LevelCollision.swift */,
 				20000024 /* MineLevel.swift */,
+				20000042 /* Ladder.swift */,
+				20000043 /* CaveProp.swift */,
 				20000033 /* LevelStats.swift */,
 				20000034 /* MineExit.swift */,
 			);
@@ -404,6 +416,10 @@
 				10000038 /* SaveData.swift in Sources */,
 				10000039 /* SaveManager.swift in Sources */,
 				10000040 /* CrashLogger.swift in Sources */,
+				10000042 /* Ladder.swift in Sources */,
+				10000043 /* CaveProp.swift in Sources */,
+				10000044 /* ScorpionEnemy.swift in Sources */,
+				10000045 /* BatEnemy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
