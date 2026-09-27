@@ -403,23 +403,24 @@ xcodebuild build \
   -destination "generic/platform=iOS Simulator" \
   -configuration Release
 
-# Archive for physical device (requires Apple Developer Team ID / signing credentials)
-xcodebuild clean archive \
-  -project CaveRangerGame.xcodeproj \
-  -scheme CaveRangerGame \
-  -configuration Release \
-  -archivePath build/CaveRanger.xcarchive
+# Build Physical Device ARM64 IPA (TrollStore / Sideload compatible)
+chmod +x scripts/build_ipa.sh
+./scripts/build_ipa.sh
+# -> Outputs build/CaveRanger.ipa
 ```
 
 ### GitHub Actions CI Workflow
 The repository includes a GitHub Actions workflow (`.github/workflows/ios-build.yml`) running on `macos-14` runners:
 1. Checks out repository.
 2. Selects Xcode 15.4.
-3. Builds the project in **Release** configuration.
-4. Generates an unsigned `.xcarchive` artifact.
+3. Runs `scripts/build_ipa.sh` targeting physical iOS device architecture (`generic/platform=iOS`).
+4. Generates and uploads `CaveRanger.ipa` directly as a downloadable GitHub Actions artifact.
 
-> [!NOTE]
-> **Physical Device Installation:** Physical iPhone installations require valid Apple Developer Code Signing certificates and Provisioning Profiles configured in Xcode. Unsigned builds validate compilation and packaging on CI.
+### Installing via TrollStore (iOS 17.0.0 / iPhone 11)
+1. Download `CaveRanger.ipa` from GitHub Actions artifacts or local build.
+2. Transfer `CaveRanger.ipa` to iPhone 11 (AirDrop, iCloud Drive, or local HTTP server).
+3. Open `CaveRanger.ipa` in the **TrollStore** application and tap **Install**.
+4. TrollStore signs the binary with persistent root entitlements and places it directly on your Home Screen.
 
 ---
 

@@ -1,4 +1,4 @@
-name: iOS Build
+name: Build iOS IPA (TrollStore / Physical Device)
 
 on:
   push:
@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build iOS App
+  build-ipa:
+    name: Build ARM64 Release IPA
     runs-on: macos-14
 
     steps:
@@ -21,32 +21,14 @@ jobs:
           sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
           xcodebuild -version
 
-      - name: Build for iOS Simulator (Release)
+      - name: Run IPA Build Script
         run: |
-          xcodebuild build \
-            -project CaveRangerGame.xcodeproj \
-            -scheme CaveRangerGame \
-            -configuration Release \
-            -destination "generic/platform=iOS Simulator" \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            | xcpretty || xcodebuild build -project CaveRangerGame.xcodeproj -scheme CaveRangerGame -configuration Release -destination "generic/platform=iOS Simulator" CODE_SIGNING_ALLOWED=NO
+          chmod +x scripts/build_ipa.sh
+          ./scripts/build_ipa.sh
 
-      - name: Archive iOS App (Unsigned for Device Target)
-        run: |
-          xcodebuild clean archive \
-            -project CaveRangerGame.xcodeproj \
-            -scheme CaveRangerGame \
-            -configuration Release \
-            -archivePath build/CaveRanger.xcarchive \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO
-
-      - name: Upload Build Archive Artifact
+      - name: Upload CaveRanger.ipa Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: CaveRanger-xcarchive
-          path: build/CaveRanger.xcarchive
-          if-no-files-found: warn
+          name: CaveRanger-TrollStore-IPA
+          path: build/CaveRanger.ipa
+          if-no-files-found: error
